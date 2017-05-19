@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.Driver
+
