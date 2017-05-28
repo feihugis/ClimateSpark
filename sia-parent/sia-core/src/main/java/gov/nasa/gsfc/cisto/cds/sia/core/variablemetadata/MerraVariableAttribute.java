@@ -335,7 +335,7 @@ public class MerraVariableAttribute implements SiaVariableAttribute, WritableCom
     Configuration configuration = new Configuration();
     FileSystem fs = FileSystem.get(configuration);
     MerraVariableAttribute merraVariableAttribute = new MerraVariableAttribute();
-    String filePath = "/Users/feihu/Documents/Data/Merra4D/MERRA300.prod.assim.instM_3d_ana_Np.201303.hdf";
+    String filePath = "/Users/feihu/Documents/Data/modis_hdf/MOD08_D3/MOD08_D3.A2016001.006.2016008061022.hdf";
     List<SiaVariableAttribute> siaVariableAttributeList = merraVariableAttribute.getVariableMetadataList(fs, filePath, new String[]{"Cov_U_QV", "Cov_U_T"});
     for (SiaVariableAttribute siaVariableAttribute : siaVariableAttributeList) {
       System.out.println(siaVariableAttribute.toString());

@@ -5,6 +5,7 @@ import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.functions.ClimateRDDFuncti
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SQLContext
 import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.ClimateSparkContext
+import ucar.nc2.dataset.NetcdfDataset
 
 
 /**

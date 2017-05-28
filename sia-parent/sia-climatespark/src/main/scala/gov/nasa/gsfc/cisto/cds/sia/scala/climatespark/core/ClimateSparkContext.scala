@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core
 
+import gov.nasa.gsfc.cisto.cds.sia.core.config.{ClimateSparkConfig, HadoopConfiguration}
 import gov.nasa.gsfc.cisto.cds.sia.core.io.key.VarKey
 import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.inputformat.SiaInputFormat
 import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.io.ArraySerializer
@@ -69,6 +70,14 @@ class ClimateSparkContext (@transient val sparkContext: SparkContext){
     this.sparkContext.getConf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .set("spark.kryo.registrator", classOf[ClimateSparkKryoRegistrator].getName)
 
+    this.hConf.addResource(hadoopConf)
+  }
+
+  def this(sc: SparkContext, climateSparkConfig: ClimateSparkConfig) {
+    this(sc)
+    this.sparkContext.getConf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      .set("spark.kryo.registrator", classOf[ClimateSparkKryoRegistrator].getName)
+    val hadoopConf = new HadoopConfiguration(climateSparkConfig).getHadoopConf
     this.hConf.addResource(hadoopConf)
   }
 

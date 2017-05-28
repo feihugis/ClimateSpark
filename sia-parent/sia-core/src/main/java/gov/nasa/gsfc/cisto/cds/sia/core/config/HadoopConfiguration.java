@@ -55,6 +55,41 @@ public class HadoopConfiguration {
     this.hadoopConf.set(ConfigParameterKeywords.siaCollectionClass, siaCollectionClass);
   }
 
+  public HadoopConfiguration(ClimateSparkConfig climateSparkConfig) throws ConfigurationException {
+    String jobType = "mapreducer";
+    SiaConfigurationFactory siaConfigurationFactory = new SiaConfigurationFactory();
+    MapreducerConfiguration mapreducerConfiguration = (MapreducerConfiguration) siaConfigurationFactory.getSiaConfiguration(jobType);
+    mapreducerConfiguration.buildBaseConfiguration(climateSparkConfig);
+
+    // Create the user properties object and then bundle it up so it can be put into hadoop configuration
+    UserProperties userProperties = mapreducerConfiguration.buildUserProperties();
+
+    String userPropertiesSerialized = SiaConfigurationUtils.serializeObject(userProperties);
+
+    // Create the dataset and collection objects and then bundle them up so they can be put into hadoop configuration
+    SiaDataset siaDataset = mapreducerConfiguration.buildSIADataset(userProperties);
+    String siaDatasetSerialized = SiaConfigurationUtils.serializeObject(siaDataset);
+    SiaCollection
+        siaCollection = mapreducerConfiguration.buildSIACollection(userProperties);
+    String siaCollectionSerialized = SiaConfigurationUtils.serializeObject(siaCollection);
+    String siaDatasetClass = siaDataset.getClass().toString().split(" ")[1];
+    String siaCollectionClass = siaCollection.getClass().toString().split(" ")[1];
+
+    // Create the spatiotemporal filters object and then bundle it up so it can be put into hadoop configuration
+    SpatiotemporalFilters spatiotemporalFilters = mapreducerConfiguration.buildSpatiotemporalFilters("monthly");
+    String spatiotemporalFiltersSerialized = SiaConfigurationUtils.serializeObject(spatiotemporalFilters);
+
+    // Setup the hadoop configuration
+    this.hadoopConf  = new Configuration();
+    SiaConfigurationUtils.addKeysToHadoopConfiguration(mapreducerConfiguration.getBaseConfiguration(), this.hadoopConf);
+    this.hadoopConf.set(ConfigParameterKeywords.userPropertiesSerialized, userPropertiesSerialized);
+    this.hadoopConf.set(ConfigParameterKeywords.spatiotemporalFiltersSerialized, spatiotemporalFiltersSerialized);
+    this.hadoopConf.set(ConfigParameterKeywords.siaDatasetSerialized, siaDatasetSerialized);
+    this.hadoopConf.set(ConfigParameterKeywords.siaCollectionSerialized, siaCollectionSerialized);
+    this.hadoopConf.set(ConfigParameterKeywords.siaDatasetClass, siaDatasetClass);
+    this.hadoopConf.set(ConfigParameterKeywords.siaCollectionClass, siaCollectionClass);
+  }
+
     /**
      * Gets hadoop conf.
      *

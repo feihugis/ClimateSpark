@@ -40,6 +40,41 @@ public class MapreducerConfiguration extends CompositeConfiguration implements S
     private static final Log LOG = LogFactory.getLog(MapreducerConfiguration.class);
     private String jobType = "mapreducer";
 
+    public void buildBaseConfiguration(ClimateSparkConfig climateSparkConfig) {
+      this.baseConfig = new CompositeConfiguration();
+      baseConfig.setProperty("dataset.name", climateSparkConfig.getDataset_name());
+      baseConfig.setProperty("job.name", climateSparkConfig.getJob_name());
+      baseConfig.setProperty("variable.names", climateSparkConfig.getVariable_names());
+      baseConfig.setProperty("collection.name", climateSparkConfig.getCollection_name());
+      baseConfig.setProperty("input.path", climateSparkConfig.getInput_path());
+      baseConfig.setProperty("output.path", climateSparkConfig.getOutput_path());
+      baseConfig.setProperty("file.extension", climateSparkConfig.getFile_extension());
+      baseConfig.setProperty("mapreduce.framework.name", climateSparkConfig.getMapreduce_framework_name());
+      baseConfig.setProperty("threads.per.node", climateSparkConfig.getThreads_per_node());
+      baseConfig.setProperty("analytics.operation", climateSparkConfig.getAnalytics_operation());
+      baseConfig.setProperty("number.reducers", climateSparkConfig.getNumber_reducers());
+
+      baseConfig.setProperty("year.start", climateSparkConfig.getYear_start());
+
+      baseConfig.setProperty("month.start", climateSparkConfig.getMonth_start());
+      baseConfig.setProperty("day.start", climateSparkConfig.getDay_start());
+      baseConfig.setProperty("hour.start", climateSparkConfig.getHour_start());
+      baseConfig.setProperty("height.start", climateSparkConfig.getHeight_start());
+      baseConfig.setProperty("lat.start", climateSparkConfig.getLat_start());
+      baseConfig.setProperty("lon.start", climateSparkConfig.getLon_start());
+      baseConfig.setProperty("year.end", climateSparkConfig.getYear_end());
+      baseConfig.setProperty("month.end", climateSparkConfig.getMonth_end());
+      baseConfig.setProperty("day.end", climateSparkConfig.getDay_end());
+      baseConfig.setProperty("hour.end", climateSparkConfig.getHour_end());
+      baseConfig.setProperty("height.end", climateSparkConfig.getHeight_end());
+      baseConfig.setProperty("lat.end", climateSparkConfig.getLat_end());
+      baseConfig.setProperty("lon.end", climateSparkConfig.getLon_end());
+      baseConfig.setProperty("xml.hibernate.table.mapping.file.path", climateSparkConfig.getXml_hibernate_table_mapping_file_path());
+
+      SiaConfigurationUtils.validateKeys(baseConfig, jobType);
+      isBuilt = true;
+    }
+
     public void buildBaseConfiguration(String[] args) throws ConfigurationException {
         if(isBuilt) {
             return;
@@ -48,6 +83,8 @@ public class MapreducerConfiguration extends CompositeConfiguration implements S
         validateCommandLineInput(args);
         this.baseConfig = new CompositeConfiguration();
         File propertiesFile = new File(args[0]);
+
+
 
         if(propertiesFile.canRead()) {
             baseConfig.addConfiguration(new PropertiesConfiguration(propertiesFile));
