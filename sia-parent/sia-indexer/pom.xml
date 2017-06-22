@@ -1,0 +1,101 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>gov.nasa.gsfc.cisto.cds.sia</groupId>
+		<artifactId>sia-parent</artifactId>
+		<version>0.1.0</version>
+	</parent>
+	<artifactId>sia-indexer</artifactId>
+	<packaging>jar</packaging>
+	<name>SIA Indexer Project</name>
+
+	<!-- ====================================================================== -->
+	<!-- Build plugins -->
+	<!-- ====================================================================== -->
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>gov.nasa.gsfc.cisto.cds.sia.indexer.IndexDriver</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven.shade.plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<resourceBundles>
+						<resourceBundle>gov.nasa.gsfc.cisto.cds.sia:sia-core:${project.version}</resourceBundle>
+					</resourceBundles>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- ====================================================================== -->
+	<!-- Dependencies -->
+	<!-- ====================================================================== -->
+	<dependencies>
+		<dependency>
+			<groupId>gov.nasa.gsfc.cisto.cds.sia</groupId>
+			<artifactId>sia-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${psql.version}</version>
+		</dependency>
+	</dependencies>
+
+	<!-- ====================================================================== -->
+	<!-- Repositories -->
+	<!-- ====================================================================== -->
+	<repositories>
+		<repository>
+			<id>postgresql</id>
+			<url>https://mvnrepository.com/artifact</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>

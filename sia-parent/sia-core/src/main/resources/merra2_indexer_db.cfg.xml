@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection properties -->
+        <!-- jdbc:postgresql://<HOST>:<PORT>/<DB> -->
+
+        <property name="connection.url">jdbc:postgresql://localhost:5432/merra2hibernate</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.username">feihu</property>
+        <property name="connection.password">feihu</property>
+
+        <!--
+        <property name="connection.url">jdbc:postgresql://cldradn101:5432/merra</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.username">sia</property>
+        <property name="connection.password">sia</property>
+        -->
+        <!-- SQL Dialect -->
+        <property name="dialect">org.hibernate.dialect.PostgreSQL82Dialect</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Setting hbm2ddl.auto to create will cause it to drop the table and recreate it -->
+        <!-- Setting hbm2ddl.auto to auto will cause it to update the table -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Entities -->
+        <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.Merra2VariableEntity"></mapping>
+        <!-- may need to find a way to deal with this mapping resource for the indexer, it is only needed on the analytics end -->
+
+        <mapping resource="merra2_entity_map.hbm.xml"></mapping>
+
+    </session-factory>
+</hibernate-configuration>

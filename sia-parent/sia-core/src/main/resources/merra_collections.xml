@@ -1,0 +1,455 @@
+<?xml version='1.0' encoding='utf-8'?>
+<merraCollections>
+    <!-- MERRA DAILIES 2 DIMENSIONAL CHEMISTRY FORCING -->
+    <collection name="tavg3_2d_chm_Fx">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA DAILIES 2 DIMENSIONAL -->
+    <collection name="inst1_2d_int_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="tavg1_2d_flx_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg1_2d_int_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg1_2d_lnd_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg1_2d_mld_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg1_2d_ocn_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg1_2d_rad_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg1_2d_slv_Nx">
+        <temporalResolution>hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA DAILIES 3 DIMENSIONAL CHEMISTRY FORCING -->
+    <collection name="inst3_3d_chm_Ne">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_chm_Fe">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_chm_Fv">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_chm_Ne">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_chm_Nv">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA DAILIES 3 DIMENSIONAL -->
+    <collection name="inst3_3d_asm_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="inst6_3d_ana_Np">
+        <temporalResolution>six_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="inst6_3d_ana_Nv">
+        <temporalResolution>six_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_cld_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_mst_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_odt_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_qdt_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_rad_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_tdt_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_trb_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavg3_3d_udt_Cp">
+        <temporalResolution>three_hourly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA DIURNAL 2 DIMENSIONAL CHEMISTRY FORCING -->
+    <collection name="tavgU_2d_chm_Fx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA DIURNAL 2 DIMENSIONAL -->
+    <collection name="instU_2d_int_Nx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_2d_flx_Nx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_2d_int_Nx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_2d_lnd_Nx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_2d_mld_Nx">
+        <collectionName>tavgU_2d_mld_Nx</collectionName>
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_2d_ocn_Nx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_2d_rad_Nx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_2d_slv_Nx">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA DIURNAL 3 DIMENSIONAL -->
+    <collection name="instU_3d_ana_Np">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="instU_3d_asm_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_cld_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_mst_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_odt_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_qdt_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_rad_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_tdt_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_trb_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgU_3d_udt_Cp">
+        <temporalResolution>diurnal</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA MONTHLY 2 DIMENSIONAL CHEMISTRY FORCING -->
+    <collection name="tavgM_2d_chm_Fx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA MONTHLY 2 DIMENSIONAL -->
+    <collection name="instM_2d_int_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_2d_flx_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_2d_int_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_2d_lnd_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_2d_mld_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_2d_ocn_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_2d_rad_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_2d_slv_Nx">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <!-- MERRA MONTHLY 3 DIMENSIONAL -->
+    <collection name="instM_3d_ana_Np">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="instM_3d_asm_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>instantaneous</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_cld_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_mst_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_odt_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_qdt_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_rad_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_tdt_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_trb_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+    <collection name="tavgM_3d_udt_Cp">
+        <temporalResolution>monthly</temporalResolution>
+        <temporalRangeStart>1979-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>hdf</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
+</merraCollections>

@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="v_instm_3d_ana_np" entity-name="v_instm_3d_ana_np">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="t_instm_3d_ana_np" entity-name="t_instm_3d_ana_np">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="u_instm_3d_ana_np" entity-name="u_instm_3d_ana_np">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="evap_tavg3_2d_chm_fx" entity-name="evap_tavg3_2d_chm_fx">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="ps_tavg3_2d_chm_fx" entity-name="ps_tavg3_2d_chm_fx">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="ts_tavg3_2d_chm_fx" entity-name="ts_tavg3_2d_chm_fx">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="t_inst3_3d_asm_cp" entity-name="t_inst3_3d_asm_cp">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="u_inst3_3d_asm_cp" entity-name="u_inst3_3d_asm_cp">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="v_inst3_3d_asm_cp" entity-name="v_inst3_3d_asm_cp">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="grn_tavgm_2d_mld_nx" entity-name="grn_tavgm_2d_mld_nx">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="lai_tavgm_2d_mld_nx" entity-name="lai_tavgm_2d_mld_nx">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="cov_u_t_instm_3d_ana_np" entity-name="cov_u_t_instm_3d_ana_np">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity" table="cucnvrn_tavg1_2d_int_nx" entity-name="cucnvrn_tavg1_2d_int_nx">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="corner" access="field" column="corner"/>
+    </class>
+</hibernate-mapping>

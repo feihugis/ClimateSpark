@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<merra2Dataset name="MERRA2">
+    <datasetName>MERRA2</datasetName>
+    <fileExtension>nc4</fileExtension>
+    <hibernateConfigXmlFile>merra2_indexer_db.cfg.xml</hibernateConfigXmlFile>
+</merra2Dataset>

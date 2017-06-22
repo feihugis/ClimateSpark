@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.Merra2VariableEntity" table="t_instm_3d_ana_np" entity-name="t_instm_3d_ana_np">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="corner" access="field" column="corner"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="geometryID" access="field" column="geometry_id"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.Merra2VariableEntity" table="u_instm_3d_ana_np" entity-name="u_instm_3d_ana_np">
+        <id name="id" access="field" column="id"/>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="corner" access="field" column="corner"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="geometryID" access="field" column="geometry_id"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.Merra2VariableEntity" table="v_instm_3d_ana_np" entity-name="v_instm_3d_ana_np">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="corner" access="field" column="corner"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="geometryID" access="field" column="geometry_id"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.Merra2VariableEntity" table="ke_inst1_2d_int_nx" entity-name="ke_inst1_2d_int_nx">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="corner" access="field" column="corner"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="geometryID" access="field" column="geometry_id"/>
+    </class>
+    <class name="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.Merra2VariableEntity" table="cdh_tavgm_2d_flx_nx" entity-name="cdh_tavgm_2d_flx_nx">
+        <id name="id" access="field" column="id">
+            <generator class="assigned"/>
+        </id>
+        <property name="blockHosts" access="field" column="block_hosts"/>
+        <property name="byteLength" access="field" column="byte_length"/>
+        <property name="byteOffset" access="field" column="byte_offset"/>
+        <property name="compressionCode" access="field" column="compression_code"/>
+        <property name="corner" access="field" column="corner"/>
+        <property name="temporalComponent" access="field" column="temporal_component"/>
+        <property name="geometryID" access="field" column="geometry_id"/>
+    </class>
+</hibernate-mapping>

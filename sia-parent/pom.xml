@@ -1,0 +1,286 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>gov.nasa.gsfc.cisto.cds.sia</groupId>
+	<artifactId>sia-parent</artifactId>
+	<version>0.1.0</version>
+	<packaging>pom</packaging>
+
+	<name>Spatiotemporal Indexing Approach (SIA) Parent Project</name>
+
+	<!-- ====================================================================== -->
+	<!-- Team -->
+	<!-- ====================================================================== -->
+	<organization>
+		<name>NASA GSFC CISTO Climate Data Services</name>
+		<url>http://science.gsfc.nasa.gov/</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>dduffy</id>
+			<name>Dan Duffy</name>
+			<email>daniel.q.duffy@nasa.gov</email>
+			<organization>NASA</organization>
+			<organizationUrl>http://science.gsfc.nasa.gov</organizationUrl>
+			<roles>
+				<role>principal investigator</role>
+				<role>concept definition</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>jschnase</id>
+			<name>John Schnase</name>
+			<email>john.l.schnase@nasa.gov</email>
+			<organization>NASA</organization>
+			<organizationUrl>http://science.gsfc.nasa.gov</organizationUrl>
+			<roles>
+				<role>principal investigator</role>
+				<role>concept definition</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>cyang3</id>
+			<name>Chaowei(Phil) Yang</name>
+			<email>cyang3@gmu.edu</email>
+			<organization>GMU</organization>
+			<organizationUrl>http://stcenter.net</organizationUrl>
+			<roles>
+				<role>principal investigator</role>
+				<role>concept definition</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>fhu</id>
+			<name>Fei Hu</name>
+			<email>fhu@gmu.edu</email>
+			<organization>GMU</organization>
+			<organizationUrl>http://stcenter.net</organizationUrl>
+			<roles>
+				<role>coder</role>
+				<role>buildmaster</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+        <developer>
+            <id>mkbowen</id>
+            <name>Mike Bowen</name>
+            <email>michael.k.bowen@nasa.gov</email>
+            <organization>NASA</organization>
+            <organizationUrl>http://science.gsfc.nasa.gov</organizationUrl>
+            <roles>
+                <role>coder</role>
+                <role>buildmaster</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+		<developer>
+			<id>gstamkin</id>
+			<name>Glenn Tamkin</name>
+			<email>glenn.s.tamkin@nasa.gov</email>
+			<organization>NASA</organization>
+			<organizationUrl>http://science.gsfc.nasa.gov</organizationUrl>
+			<roles>
+				<role>coder</role>
+				<role>buildmaster</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>bdwills</id>
+			<name>Brittany Wills</name>
+			<email>brittany.d.wills@nasa.gov</email>
+			<organization>NASA</organization>
+			<organizationUrl>http://science.gsfc.nasa.gov</organizationUrl>
+			<roles>
+				<role>coder</role>
+				<role>buildmaster</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+
+	<!-- ====================================================================== -->
+	<!-- Properties -->
+	<!-- ====================================================================== -->
+	<properties>
+		<hadoop.version>2.6.0</hadoop.version>
+		<maven.jar.plugin.version>2.6</maven.jar.plugin.version>
+		<maven.shade.plugin.version>2.4.1</maven.shade.plugin.version>
+		<maven.source.plugin.version>2.4</maven.source.plugin.version>
+		<maven.project.plugin.version>2.8.1</maven.project.plugin.version>
+		<maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
+		<junit>4.12</junit>
+		<netcdf.all.version>4.3.23</netcdf.all.version>
+		<psql.version>9.4-1203-jdbc4</psql.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<!-- ====================================================================== -->
+	<!-- Modules -->
+	<!-- ====================================================================== -->
+	<modules>
+		<module>sia-climatespark</module>
+		<module>sia-core</module>
+		<module>sia-indexer</module>
+		<module>sia-mapreducer</module>
+    </modules>
+
+	<!-- ====================================================================== -->
+	<!-- Build plugins -->
+	<!-- ====================================================================== -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven.shade.plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+
+                        <configuration>
+                            <minimizeJar>false</minimizeJar>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
+                            </transformers>
+
+                        </configuration>
+
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- ====================================================================== -->
+	<!-- Common Dependencies -->
+	<!-- ====================================================================== -->
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-client</artifactId>
+			<version>${hadoop.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-minicluster</artifactId>
+			<version>${hadoop.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jblas</groupId>
+			<artifactId>jblas</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+	</dependencies>
+
+	<!-- ====================================================================== -->
+	<!-- Repositories -->
+	<!-- ====================================================================== -->
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<url>https://oss.sonatype.org/content/repositories</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>netcdf</id>
+			<url>http://maven.geotoolkit.org</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<!-- ====================================================================== -->
+	<!-- Reporting plugins -->
+	<!-- ====================================================================== -->
+	<distributionManagement>
+		<site>
+			<id>localhost</id>
+			<url>scp://localhost/usr/share/phpinfo/site/</url>
+		</site>
+	</distributionManagement>
+
+	<!-- ====================================================================== -->
+	<!-- Reporting plugins -->
+	<!-- ====================================================================== -->
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-project</artifactId>
+				<version>${maven.project.plugin.version}</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>index</report>
+							<report>project-team</report>
+							<report>mailing-list</report>
+							<report>cim</report>
+							<report>issue-tracking</report>
+							<report>license</report>
+							<report>dependencies</report>
+							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.plugin.version}</version>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>

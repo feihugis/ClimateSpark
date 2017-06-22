@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection properties -->
+        <!-- jdbc:postgresql://<HOST>:<PORT>/<DB> -->
+<!--
+        <property name="connection.url">jdbc:postgresql://localhost:5432/sia_metadata</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.username">mkbowen</property>
+        <property name="connection.password"></property>
+-->
+
+        <property name="connection.url">jdbc:postgresql://localhost:5432/sia_metadata</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.username">feihu</property>
+        <property name="connection.password">feihu</property>
+
+        <!-- SQL Dialect -->
+        <property name="dialect">org.hibernate.dialect.PostgreSQL82Dialect</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+
+        <!-- Setting hbm2ddl.auto to create will cause it to drop the table and recreate it -->
+        <!-- Setting hbm2ddl.auto to auto will cause it to update the table -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Entities -->
+        <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.MerraMetadata" />
+        <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.MerraVariableMetadata" />
+        <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.MerraFilePathMetadata" />
+        <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2Metadata" />
+        <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2VariableMetadata" />
+        <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2FilePathMetadata" />
+
+    </session-factory>
+</hibernate-configuration>
