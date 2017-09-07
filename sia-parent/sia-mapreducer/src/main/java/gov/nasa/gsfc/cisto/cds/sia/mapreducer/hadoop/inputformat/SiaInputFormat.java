@@ -118,7 +118,7 @@ public class SiaInputFormat extends FileInputFormat {
 
       String[] dimensions = stringListToStringArray(siaVariableMetadata.getDimensionOrder());
 
-      System.out.println("Entity: " + entity.getByteLength());
+      System.out.println("Entity: " + entity.getByteLength() + " time: " + entity.getTemporalComponent());
 
       SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
       siaFilePathCompositeKey.setCollectionName(collectionName);

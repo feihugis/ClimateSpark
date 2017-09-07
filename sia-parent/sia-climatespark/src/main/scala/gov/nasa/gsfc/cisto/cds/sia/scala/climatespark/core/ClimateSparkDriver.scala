@@ -3,7 +3,7 @@ package gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core
 import gov.nasa.gsfc.cisto.cds.sia.core.config.ClimateSparkConfig
 import gov.nasa.gsfc.cisto.cds.sia.core.io.key.VarKey
 import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.io.ArraySerializer
-import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.Cell
+import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.CellOld
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.functions.ClimateRDDFunction._
@@ -28,7 +28,7 @@ class ClimateSparkDriver (sparkContext: SparkContext, climateSparkConfig: Climat
     if (result != null) 1 else 0
   }
 
-  def getPointTimeSeries: RDD[Cell] = climateRDD.queryPointTimeSeries
+  def getPointTimeSeries: RDD[CellOld] = climateRDD.queryPointTimeSeries
 
   def getTimeAvg(varNum: Int): RDD[(String, ArraySerializer)] = climateRDD.timeAvg(varNum)
 }

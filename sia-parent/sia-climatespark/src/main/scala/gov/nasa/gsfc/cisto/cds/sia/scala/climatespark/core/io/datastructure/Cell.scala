@@ -1,7 +1,22 @@
 package gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure
 
-/**
-  * Created by Fei Hu on 12/22/16.
-  */
+import gov.nasa.gsfc.cisto.cds.sia.core.io.key.VarKey
+import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.io.ArraySerializer
 
-case class Cell (varName: String, time: String, lat: Float, lon: Float, value: Short)
+import scala.collection.mutable.ArrayBuffer
+import scala.math.{abs, sin}
+
+/**
+  * Created by Fei Hu on 9/6/17.
+  */
+trait Cell { }
+
+
+
+
+
+
+
+
+
+

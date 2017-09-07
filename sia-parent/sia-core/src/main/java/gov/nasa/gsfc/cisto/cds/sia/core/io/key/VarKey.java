@@ -55,6 +55,7 @@ public class VarKey implements Writable, KryoSerializable {
                 String[] dimensions, String validMin, String validMax, String fillValue) {
     this.collectionName = collectionName;
     this.varName = varName;
+    this.time = time;
     this.corner = corner;
     this.shape = shape;
     this.dimensions = dimensions;

@@ -84,8 +84,6 @@ public class MapreducerConfiguration extends CompositeConfiguration implements S
         this.baseConfig = new CompositeConfiguration();
         File propertiesFile = new File(args[0]);
 
-
-
         if(propertiesFile.canRead()) {
             baseConfig.addConfiguration(new PropertiesConfiguration(propertiesFile));
             LOG.info("Mapreducer properties file successfully loaded from " + propertiesFile.getPath());

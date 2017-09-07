@@ -2,7 +2,7 @@ package gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.functions
 
 import gov.nasa.gsfc.cisto.cds.sia.core.io.key.VarKey
 import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.io.ArraySerializer
-import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.Cell
+import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.CellOld
 import org.apache.spark.rdd.RDD
 
 import scala.collection.mutable.ArrayBuffer
@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
   * Created by Fei Hu on 12/22/16.
   */
 class ClimateRDDFunction (self: RDD[(VarKey, ArraySerializer)]) extends Serializable{
-  def queryPointTimeSeries: RDD[Cell] = {
+  def queryPointTimeSeries: RDD[CellOld] = {
     self.flatMap(tuple => {
       val dataChunk = tuple._1
       val time = dataChunk.getTime.toString
@@ -20,7 +20,7 @@ class ClimateRDDFunction (self: RDD[(VarKey, ArraySerializer)]) extends Serializ
       val varName = dataChunk.getVarName
 
       val array = tuple._2.getArray
-      var cellList = ArrayBuffer.empty[Cell]
+      var cellList = ArrayBuffer.empty[CellOld]
 
       for (lat:Int <- 0 until shape(0)){
         for (lon:Int <- 0 until shape(1)){
@@ -28,7 +28,7 @@ class ClimateRDDFunction (self: RDD[(VarKey, ArraySerializer)]) extends Serializ
           val value = array.getShort(index)
           val y = 89.5F - (corner(0)+lat)*1.0F
           val x = -179.5F + (corner(1)+lon)*1.0F
-          val cell = Cell(varName, time, y, x, value)
+          val cell = CellOld(varName, time, y, x, value)
           cellList += cell
         }
       }
