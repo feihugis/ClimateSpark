@@ -5,9 +5,12 @@ import gov.nasa.gsfc.cisto.cds.sia.core.io.key.VarKey
 import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.inputformat.SiaInputFormat
 import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.io.ArraySerializer
 import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.ClimateSparkKryoRegistrator
+import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.rdd.ClimateRDD
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.mapreduce.InputFormat
+import org.apache.spark.deploy.SparkHadoopUtil
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -82,7 +85,10 @@ class ClimateSparkContext (@transient val sparkContext: SparkContext){
   }
 
   def getClimateRDD: RDD[(VarKey, ArraySerializer)] = {
-    this.sparkContext.newAPIHadoopRDD(this.hConf, inputFormat, dataChunk, arraySerializer).map(rdd => rdd ).filter(_._1 != null)
+    //this.sparkContext.newAPIHadoopRDD(this.hConf, inputFormat, dataChunk, arraySerializer).map(rdd => rdd ).filter(_._1 != null)
+    val jconf = new JobConf(this.hConf)
+    SparkHadoopUtil.get.addCredentials(jconf)
+    new ClimateRDD(this.sparkContext, this.hConf)
   }
 
   def getHadoopConfig = this.hConf

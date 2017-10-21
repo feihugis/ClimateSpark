@@ -30,10 +30,14 @@ object SpatiotemporalQuery {
 
     val climateRDD = sc.getClimateRDD
 
+    val monthlyAvg = climateRDD.monthlyAvg(1).toDF("VarName", "Time", "Avg")
+    monthlyAvg.show()
+
+
     val cellRDD:RDD[Cell4D] = climateRDD.getCells.map(cell => cell.asInstanceOf[Cell4D])
 
     val df = sqlContext.createDataFrame(cellRDD)
     df.registerTempTable("merra")
-    sqlContext.sql("SELECT d0 AS date, d1 AS hour, d2 AS lat, d3 AS lon FROM merra").show()
+    sqlContext.sql("SELECT d0 AS date, d1 AS hour, d2 AS lat, d3 AS lon, value AS value FROM merra").show()
   }
 }

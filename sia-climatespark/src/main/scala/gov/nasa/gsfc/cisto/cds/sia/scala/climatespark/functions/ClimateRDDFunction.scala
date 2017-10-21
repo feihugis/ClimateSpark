@@ -4,6 +4,7 @@ import gov.nasa.gsfc.cisto.cds.sia.core.io.key.VarKey
 import gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.io.ArraySerializer
 import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.CellOld
 import org.apache.spark.rdd.RDD
+import ucar.ma2.MAMath
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -33,6 +34,21 @@ class ClimateRDDFunction (self: RDD[(VarKey, ArraySerializer)]) extends Serializ
         }
       }
       cellList.toList
+    })
+  }
+
+  def monthlyAvg(varNum: Int): RDD[(String, Int, Double)] = {
+    self.map(tuple => {
+      val avg = MAMath.sumDouble(tuple._2.getArray)/tuple._2.getArray.getSize
+      val date = tuple._1.getTime.toString.substring(0, 6)
+      val varName = tuple._1.getVarName
+      (varName + "_" + date, avg)
+    }).groupByKey().map(tuple => {
+      val components = tuple._1.split("_")
+      val varName = components(0)
+      val date = components(1).toInt
+      val avg = tuple._2.sum/tuple._2.size
+      (varName, date, avg)
     })
   }
 

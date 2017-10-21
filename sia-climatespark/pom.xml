@@ -92,6 +92,11 @@
             <name>Scala-Tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
+        <repository>
+            <id>ankurdave-maven-repo</id>
+            <name>ankurdave-repo</name>
+            <url>https://raw.githubusercontent.com/ankurdave/maven-repo/master</url>
+        </repository>
     </repositories>
 
     <!-- ====================================================================== -->
