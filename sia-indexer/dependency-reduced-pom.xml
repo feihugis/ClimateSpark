@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>sia-parent</artifactId>
+    <groupId>gov.nasa.gsfc.cisto.cds.sia</groupId>
+    <version>0.1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>sia-indexer</artifactId>
+  <name>SIA Indexer Project</name>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven.jar.plugin.version}</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>gov.nasa.gsfc.cisto.cds.sia.indexer.IndexDriver</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven.shade.plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <resourceBundles>
+            <resourceBundle>gov.nasa.gsfc.cisto.cds.sia:sia-core:${project.version}</resourceBundle>
+          </resourceBundles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <releases />
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>postgresql</id>
+      <url>https://mvnrepository.com/artifact</url>
+    </repository>
+  </repositories>
+</project>
+
