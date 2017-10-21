@@ -34,8 +34,6 @@ object SpatiotemporalQuery {
 
     val df = sqlContext.createDataFrame(cellRDD)
     df.registerTempTable("merra")
-    sqlContext.sql("Select * From merra").show()
-
-
+    sqlContext.sql("SELECT d0 AS date, d1 AS hour, d2 AS lat, d3 AS lon FROM merra").show()
   }
 }
