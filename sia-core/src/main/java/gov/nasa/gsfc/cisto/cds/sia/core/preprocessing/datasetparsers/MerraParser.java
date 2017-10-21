@@ -10,9 +10,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import gov.nasa.gsfc.cisto.cds.sia.core.randomaccessfile.MerraRandomAccessFile;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
@@ -82,13 +87,30 @@ public class MerraParser implements SiaParser {
     // done *** Scale Factor - Float - From File
     // done *** Units - String - From File
 
-    public List<File> recursiveFileList(String directoryPath) {
-        Collection files = FileUtils.listFiles(new File(directoryPath), new RegexFileFilter(".*\\.hdf"), DirectoryFileFilter.DIRECTORY);
+    public List<FileStatus> recursiveFileList(String directoryPath) throws Exception {
+      PathFilter merraPathFilter = new PathFilter() {
+        public boolean accept(Path path) {
+          try {
+            FileSystem fs = gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils.getFileSystem(path.toString());
+            return fs.isDirectory(path) || path.toString().endsWith("hdf");
+          } catch (IOException e) {
+            e.printStackTrace();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+          return false;
+        }
+      };
 
-        return (List<File>) files;
+      FileSystem fs = gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils.getFileSystem(directoryPath);
+      ArrayList<FileStatus> fileList = new ArrayList<FileStatus>();
+      gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils
+          .getFileList(fs, new Path(directoryPath), merraPathFilter, fileList, true);
+
+      return fileList;
     }
 
-    public void addAllCollectionsToDb(List<File> fileList) throws IOException, JAXBException, XMLStreamException {
+    public void addAllCollectionsToDb(List<FileStatus> fileList) throws IOException, JAXBException, XMLStreamException {
         JaxbMerraCollections jaxbMerraCollections = parseXmlFile();
         HashMap<String, JaxbMerraCollection> jaxbMerraCollectionHashMap = arrayListToHashMap(jaxbMerraCollections);
         FileSystem fileSystem = FileSystem.get(new Configuration());
@@ -97,18 +119,16 @@ public class MerraParser implements SiaParser {
         Session session = sessionFactory.openSession();
         dao.setSession(session);
 
-        String currentCollection = "";
         MerraMetadata merraMetadata = null;
-        for(File file: fileList) {
-            String collectionName = collectionNameFromFileName(file.getName());
-            if(!collectionName.equalsIgnoreCase(currentCollection)) {
-                System.out.println("Processing new collection: " + collectionName);
-                currentCollection = collectionName;
-                JaxbMerraCollection jaxbMerraCollection = jaxbMerraCollectionHashMap.get(collectionName);
-                merraMetadata = addCollectionToDb(file, jaxbMerraCollection, fileSystem, dao);
-            } else if(merraMetadata != null) {
-                String temporalKey = temporalKeyFromFileName(file.getName());
-                MerraFilePathMetadata merraFilePathMetadata = buildMerraFilePathMetadata(merraMetadata, temporalKey, file.getPath());
+        FileStatus sampleFile = fileList.get(0);
+        String collectionName = collectionNameFromFileName(sampleFile.getPath().getName());
+        JaxbMerraCollection jaxbMerraCollection = jaxbMerraCollectionHashMap.get(collectionName);
+        merraMetadata = addCollectionToDb(sampleFile.getPath(), jaxbMerraCollection, fileSystem, dao);
+
+        for(FileStatus file: fileList) {
+            if(merraMetadata != null) {
+                String temporalKey = temporalKeyFromFileName(file.getPath().getName());
+                MerraFilePathMetadata merraFilePathMetadata = buildMerraFilePathMetadata(merraMetadata, temporalKey, file.getPath().toString());
                 dao.insert(merraFilePathMetadata);
             }
         }
@@ -128,21 +148,19 @@ public class MerraParser implements SiaParser {
      * @throws JAXBException      the jaxb exception
      * @throws XMLStreamException the xml stream exception
      */
-    protected MerraMetadata addCollectionToDb(File file, JaxbMerraCollection jaxbMerraCollection, FileSystem fileSystem, DAOImpl dao) throws IOException, JAXBException, XMLStreamException {
-        /**
-        FileStatus fileStatus = fileSystem.getFileStatus(new Path(file));
+    protected MerraMetadata addCollectionToDb(Path file, JaxbMerraCollection jaxbMerraCollection, FileSystem fileSystem, DAOImpl dao) throws IOException, JAXBException, XMLStreamException {
+        FileStatus fileStatus = fileSystem.getFileStatus(file);
         MerraRandomAccessFile randomAccessFile = new MerraRandomAccessFile(fileStatus, new Configuration());
         NetcdfFile netcdfFile = NetcdfFile.open(randomAccessFile, fileStatus.getPath().toString());
-         **/
-        NetcdfFile netcdfFile = NetcdfFile.open(file.getPath());
+
         List<Variable> variableList = netcdfFile.getVariables();
         MerraMetadata merraMetadata = buildMerraMetadata(jaxbMerraCollection);
         dao.insert(merraMetadata);
 
-        String temporalKey = temporalKeyFromFileName(file.getName());
-        MerraFilePathMetadata merraFilePathMetadata = buildMerraFilePathMetadata(merraMetadata, temporalKey, file.getPath());
+        /*String temporalKey = temporalKeyFromFileName(file.getName());
+        MerraFilePathMetadata merraFilePathMetadata = buildMerraFilePathMetadata(merraMetadata, temporalKey, file.toString());
         merraMetadata.getSiaFilePathMetadataSet().add(merraFilePathMetadata);
-        dao.insert(merraFilePathMetadata);
+        dao.insert(merraFilePathMetadata);*/
 
         for(Variable variable: variableList) {
             List<Dimension> dimensionList = variable.getDimensions();

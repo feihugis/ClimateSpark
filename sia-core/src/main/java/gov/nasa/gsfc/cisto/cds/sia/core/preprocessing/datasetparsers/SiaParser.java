@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers;
 
+import org.apache.hadoop.fs.FileStatus;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
@@ -17,7 +19,7 @@ public interface SiaParser {
      * @param directoryPath the directory path
      * @return the list
      */
-    List<File> recursiveFileList(String directoryPath);
+    List<FileStatus> recursiveFileList(String directoryPath) throws Exception;
 
     /**
      * Add all collections to db.
@@ -27,5 +29,5 @@ public interface SiaParser {
      * @throws JAXBException      the jaxb exception
      * @throws XMLStreamException the xml stream exception
      */
-    void addAllCollectionsToDb(List<File> fileList) throws IOException, JAXBException, XMLStreamException;
+    void addAllCollectionsToDb(List<FileStatus> fileList) throws IOException, JAXBException, XMLStreamException;
 }

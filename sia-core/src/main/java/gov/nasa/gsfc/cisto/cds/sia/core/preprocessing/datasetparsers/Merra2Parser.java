@@ -6,8 +6,10 @@ import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2File
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2Metadata;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2VariableMetadata;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.MerraFilePathMetadata;
+import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.MerraMetadata;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.utils.DateAdapter;
 import gov.nasa.gsfc.cisto.cds.sia.core.randomaccessfile.MerraRandomAccessFile;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -15,6 +17,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -88,15 +91,32 @@ public class Merra2Parser implements SiaParser {
     // done *** Scale Factor - Float - From File
     // done *** Units - String - From File
 
-    public List<File> recursiveFileList(String directoryPath) {
-        Collection files = FileUtils.listFiles(new File(directoryPath), new RegexFileFilter(".*\\.nc4"), DirectoryFileFilter.DIRECTORY);
 
 
+    public List<FileStatus> recursiveFileList(String directoryPath) throws Exception {
+        PathFilter merra2PathFilter = new PathFilter() {
+          public boolean accept(Path path) {
+            try {
+              FileSystem fs = gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils.getFileSystem(path.toString());
+              return fs.isDirectory(path) || path.toString().endsWith("nc4");
+            } catch (IOException e) {
+              e.printStackTrace();
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+            return false;
+          }
+        };
 
-        return (List<File>) files;
+      FileSystem fs = gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils.getFileSystem(directoryPath);
+      ArrayList<FileStatus> fileList = new ArrayList<FileStatus>();
+      gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils
+          .getFileList(fs, new Path(directoryPath), merra2PathFilter, fileList, true);
+
+      return fileList;
     }
 
-    public void addAllCollectionsToDb(List<File> fileList) throws IOException, JAXBException, XMLStreamException {
+    public void addAllCollectionsToDb(List<FileStatus> fileList) throws IOException, JAXBException, XMLStreamException {
         JaxbMerra2Collections jaxbMerra2Collections = parseXmlFile();
         HashMap<String, JaxbMerra2Collection> jaxbMerra2CollectionHashMap = arrayListToHashMap(jaxbMerra2Collections);
         FileSystem fileSystem = FileSystem.get(new Configuration());
@@ -106,19 +126,20 @@ public class Merra2Parser implements SiaParser {
         dao.setSession(session);
 
         Merra2Metadata merra2Metadata = null;
-        for(File file: fileList) {
-            String collectionName = collectionNameFromFileName(file.getName());
-            System.out.println("collection name: " + collectionName);
-            JaxbMerra2Collection jaxbMerra2Collection = jaxbMerra2CollectionHashMap.get(collectionName);
-            try {
-              merra2Metadata = addCollectionToDb(file.getPath(), jaxbMerra2Collection, fileSystem, dao);
-            } catch (InvalidRangeException e) {
-              e.printStackTrace();
-            }
+        FileStatus sampleFile = fileList.get(0);
+        String collectionName = collectionNameFromFileName(sampleFile.getPath().getName());
+        System.out.println("collection name: " + collectionName);
+        JaxbMerra2Collection jaxbMerra2Collection = jaxbMerra2CollectionHashMap.get(collectionName);
+        try {
+          merra2Metadata = addCollectionToDb(sampleFile.getPath(), jaxbMerra2Collection, fileSystem, dao);
+        } catch (InvalidRangeException e) {
+          e.printStackTrace();
+        }
 
+        for(FileStatus file: fileList) {
             if(merra2Metadata != null) {
-                String temporalKey = temporalKeyFromFileName(file.getName());
-                Merra2FilePathMetadata merraFilePathMetadata = buildMerra2FilePathMetadata(merra2Metadata, temporalKey, file.getPath());
+                String temporalKey = temporalKeyFromFileName(file.getPath().getName());
+                Merra2FilePathMetadata merraFilePathMetadata = buildMerra2FilePathMetadata(merra2Metadata, temporalKey, file.getPath().toString());
                 dao.insert(merraFilePathMetadata);
               }
         }
@@ -137,11 +158,12 @@ public class Merra2Parser implements SiaParser {
      * @throws JAXBException      the jaxb exception
      * @throws XMLStreamException the xml stream exception
      */
-    protected Merra2Metadata addCollectionToDb(String file, JaxbMerra2Collection jaxbMerra2Collection, FileSystem fileSystem, DAOImpl dao)
+    protected Merra2Metadata addCollectionToDb(Path file, JaxbMerra2Collection jaxbMerra2Collection, FileSystem fileSystem, DAOImpl dao)
         throws IOException, JAXBException, XMLStreamException, InvalidRangeException {
-        FileStatus fileStatus = fileSystem.getFileStatus(new Path(file));
+        FileStatus fileStatus = fileSystem.getFileStatus(file);
         MerraRandomAccessFile randomAccessFile = new MerraRandomAccessFile(fileStatus, new Configuration());
         NetcdfFile netcdfFile = NetcdfFile.open(randomAccessFile, fileStatus.getPath().toString());
+
         List<Variable> variableList = netcdfFile.getVariables();
         Merra2Metadata merra2Metadata = buildMerra2Metadata(jaxbMerra2Collection);
         dao.insert(merra2Metadata);
@@ -178,6 +200,7 @@ public class Merra2Parser implements SiaParser {
         }
         return merra2Metadata;
     }
+
 
     public List<Integer> getChunkSize(Variable variable) throws IOException, InvalidRangeException {
       String metaInfo = variable.getVarLocationInformation();

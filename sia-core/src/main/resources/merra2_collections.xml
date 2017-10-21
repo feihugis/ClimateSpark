@@ -203,4 +203,11 @@
         <rawDataFormat>nc4</rawDataFormat>
         <statisticalIntervalType>average</statisticalIntervalType>
     </collection>
+    <collection name="tavg1_2d_int_Nx">
+        <temporalResolution>daily</temporalResolution>
+        <temporalRangeStart>1980-01-01 00:00:00</temporalRangeStart>
+        <temporalRangeEnd>2016-07-31 00:00:00</temporalRangeEnd>
+        <rawDataFormat>nc4</rawDataFormat>
+        <statisticalIntervalType>average</statisticalIntervalType>
+    </collection>
 </merra2Collections>

@@ -7,6 +7,7 @@ import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers.SiaParser;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers.SiaParserFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.fs.FileStatus;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +33,7 @@ public class PreprocessorDriver {
         UserProperties userProperties = preprocessorConfiguration.buildUserProperties();
         SiaParser siaParser = SiaParserFactory.getSiaParser(userProperties.getDatasetName());
         String directoryPath = userProperties.getInputPath();
-        List<File> fileList = siaParser.recursiveFileList(directoryPath);
+        List<FileStatus> fileList = siaParser.recursiveFileList(directoryPath);
         siaParser.addAllCollectionsToDb(fileList);
 
       System.exit(0);
