@@ -16,19 +16,19 @@ import ucar.nc2.dataset.NetcdfDataset
 object SpatiotemporalQuery {
 
   def main(args: Array[String]) {
-    val configFile = ""
     ///var/lib/hadoop-hdfs/0326/properties/sia_analytics.properties
     val input = Array[String]("/Users/feihu/Documents/IDEAProjects/ClimateSpark/properties/sia_analytics.properties")
+    // val input = Array[String]("/home/u17/indexing/ClimateSpark/properties/sia_analytics.properties")
     val hadoopConf = new HadoopConfiguration(input).getHadoopConf
     //val sc = new SparkContext()
 
     //val sc = new ClimateSparkContext(configFile, "local[6]", "test")
-    val sc = new ClimateSparkContext(hadoopConf, "local[6]", "test")
+    val climateSparkContext = new ClimateSparkContext(hadoopConf, "local[6]", "test")
     //val climateSparkContext = new ClimateSparkContext(sc, hadoopConf)
-    val sqlContext = new SQLContext(sc.getSparkContext)
+    val sqlContext = new SQLContext(climateSparkContext.getSparkContext)
     import sqlContext.implicits._
 
-    val climateRDD = sc.getClimateRDD
+    val climateRDD = climateSparkContext.getClimateRDD
 
     val monthlyAvg = climateRDD.monthlyAvg(1).toDF("VarName", "Time", "Avg")
     monthlyAvg.show()
