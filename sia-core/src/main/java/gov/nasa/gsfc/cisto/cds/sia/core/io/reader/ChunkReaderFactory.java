@@ -1,8 +1,12 @@
 package gov.nasa.gsfc.cisto.cds.sia.core.io.reader;
 
 import gov.nasa.gsfc.cisto.cds.sia.core.io.SiaChunk;
+import ucar.ma2.Array;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.io.IOException;
 
 /**
  * Created by Fei Hu on 11/28/16.
@@ -24,6 +28,8 @@ public class ChunkReaderFactory {
         return new Merra2ChunkReader();
       case 4:
         return new MerraChunkReader();
+      case -1:
+        return new NonCompressedChunkReader();
     }
 
     LOG.error("Does not support this datasets :" + dataChunk.toString() );

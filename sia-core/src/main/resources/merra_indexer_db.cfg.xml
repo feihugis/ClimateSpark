@@ -32,7 +32,7 @@
         <mapping class="gov.nasa.gsfc.cisto.cds.sia.core.variableentities.MerraVariableEntity"></mapping>
         <!-- may need to find a way to deal with this mapping resource for the indexer, it is only needed on the analytics end -->
 
-        <mapping resource="merra_entity_map.hbm.xml"></mapping>
+        <!--<mapping resource="merra_entity_map.hbm.xml"></mapping>-->
 
     </session-factory>
 </hibernate-configuration>

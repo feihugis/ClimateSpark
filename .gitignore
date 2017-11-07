@@ -16,11 +16,10 @@
 *.war
 *.ear
 
-properties
-sia-core/src/main/resources
-
 *.DS_Store
 
+properties
+sia-core/src/main/resources
 target
 
 

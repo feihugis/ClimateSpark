@@ -38,6 +38,6 @@ object SpatiotemporalQuery {
 
     val df = sqlContext.createDataFrame(cellRDD)
     df.registerTempTable("merra")
-    sqlContext.sql("SELECT d0 AS date, d1 AS hour, d2 AS lat, d3 AS lon, value AS value FROM merra").show()
+    sqlContext.sql("SELECT d0 AS D0, d1 AS D1, d2 AS D2, d3 AS D3, value AS Value FROM merra").show()
   }
 }
