@@ -85,7 +85,7 @@ public class SiaRecordReader extends RecordReader<VarKey, ArraySerializer> {
       }
     }
 
-    VarKey varKey = new VarKey("Test", dataChunk.getVarShortName(), dataChunk.getTime(), relativeCorner, targetShape, dataChunk.getDimensions(),
+    VarKey varKey = new VarKey("Test", dataChunk.getVarShortName(), dataChunk.getTime(), targetCorner, targetShape, dataChunk.getDimensions(),
                                "-10000000000", "10000000000", "99999999999");
     return varKey;
   }

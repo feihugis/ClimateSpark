@@ -107,7 +107,7 @@ public class SiaInputFormat extends FileInputFormat {
     dao.setSession(session);
     String tableName = varName.toLowerCase() + "_" + collectionName.toLowerCase();
     String query = String.format("from %s where temporal_component >= %d and temporal_component <= %d", tableName, startDate, endDate);
-    System.out.println("Query: " + query);
+    //System.out.println("Query: " + query);
     List<SiaVariableEntity> merraVariableEntityRetrieved = (List<SiaVariableEntity>) dao.findByQuery(query);
 
     List<SiaChunk> siaChunks = new ArrayList<SiaChunk>();
@@ -118,7 +118,7 @@ public class SiaInputFormat extends FileInputFormat {
 
       String[] dimensions = stringListToStringArray(siaVariableMetadata.getDimensionOrder());
 
-      System.out.println("Entity: " + entity.getByteLength() + " time: " + entity.getTemporalComponent());
+      //System.out.println("Entity: " + entity.getByteLength() + " time: " + entity.getTemporalComponent());
 
       SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
       siaFilePathCompositeKey.setCollectionName(collectionName);
