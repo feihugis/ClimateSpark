@@ -12,9 +12,9 @@
     <name>ClimateSpark</name>
 
     <properties>
-        <scala.version>2.10.6</scala.version>
+        <scala.version>2.10.5</scala.version>
         <encoding>UTF-8</encoding>
-        <spark.version>1.5.2</spark.version>
+        <spark.version>1.6.0</spark.version>
     </properties>
 
     <pluginRepositories>
