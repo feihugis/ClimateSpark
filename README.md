@@ -11,3 +11,8 @@ no redundant data reading<br />
 
 ## Tutorial
  https://docs.google.com/document/d/1JIMLhNzXA_Ay-0P6yxzGfvUhajMLfJFyyduillzpeSI/edit
+ 
+ * Extract the metadata: `hadoop jar sia-core/target/sia-core-0.1.0.jar properties/sia_merra2_preprocessor.properties`
+ * Build index: `hadoop jar sia-indexer/target/sia-indexer-0.1.0.jar properties/sia_merra2_indexer.properties`
+ 
+ 
