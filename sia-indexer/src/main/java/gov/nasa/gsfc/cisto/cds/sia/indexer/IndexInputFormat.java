@@ -24,6 +24,7 @@ import java.util.List;
  *
  */
 public class IndexInputFormat extends FileInputFormat<Text, Text> {
+  Configuration hadoopConfig;
 
   /**
    * Allows for fine-tuned control over the number of files each mapper processes
@@ -37,23 +38,33 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
    */
   @Override
   public List<InputSplit> getSplits(JobContext jobContext) throws IOException {
+    hadoopConfig = jobContext.getConfiguration();
     List<InputSplit> inputSplitList = new ArrayList<InputSplit>();
     FileSystem fileSystem = FileSystem.get(jobContext.getConfiguration());
-    UserProperties userProperties = (UserProperties) SiaConfigurationUtils.deserializeObject(jobContext.getConfiguration().get(ConfigParameterKeywords.userPropertiesSerialized), UserProperties.class);
-    String fileFormat = userProperties.getFileExtension();
+    //UserProperties userProperties = (UserProperties) SiaConfigurationUtils.deserializeObject(jobContext.getConfiguration().get(ConfigParameterKeywords.userPropertiesSerialized), UserProperties.class);
+
+    // in the listStatus function, the file extension has been used to filter out data with different
+    // formats
     List<FileStatus> fileStatusList = listStatus(jobContext);
     IndexSplit inputSplit = null;
     int numFilesInSplit = 0;
 
-    for (FileStatus file : fileStatusList) {
+    String[] varNames = hadoopConfig.get(ConfigParameterKeywords.VARIABLE_NAMES).split(",");
+    String[] inputVarNames = new String[varNames.length];
+    for (int i = 0; i < inputVarNames.length; i++) {
+      inputVarNames[i] = varNames[i].trim();
+    }
 
+    int inputFilesPerMapTask = hadoopConfig.getInt(ConfigParameterKeywords.FILES_PER_MAP_TASKS, 1);
+
+    for (FileStatus file : fileStatusList) {
       if (numFilesInSplit == 0) {
         String[] hosts = fileSystem.getFileBlockLocations(file, 0L, file.getLen())[0].getHosts();
-        inputSplit = new IndexSplit(userProperties.getVariableNames(), hosts);
+        inputSplit = new IndexSplit(inputVarNames, hosts);
       }
       inputSplit.addFilePath(file.getPath().toString());
       numFilesInSplit++;
-      if (numFilesInSplit == userProperties.getFilesPerMapTask()) {
+      if (numFilesInSplit == inputFilesPerMapTask) {
         inputSplitList.add(inputSplit);
         numFilesInSplit = 0;
       }
@@ -85,12 +96,14 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
       LocatedFileStatus fileStatus = fileStatusRemoteIterator.next();
       fileList.add(fileStatus.getPath());
     }
+
     Path[] filePathArray = fileList.toArray(new Path[fileList.size()]);
+
+    final String fileExtension = conf.get(ConfigParameterKeywords.FILE_EXTENSION);
 
     PathFilter filter = new PathFilter() {
       public boolean accept(Path path) {
-        UserProperties userProperties = (UserProperties) SiaConfigurationUtils.deserializeObject(jobContext.getConfiguration().get(ConfigParameterKeywords.userPropertiesSerialized), UserProperties.class);
-        return path.getName().endsWith(userProperties.getFileExtension());
+        return path.getName().endsWith(fileExtension);
       }
     };
 

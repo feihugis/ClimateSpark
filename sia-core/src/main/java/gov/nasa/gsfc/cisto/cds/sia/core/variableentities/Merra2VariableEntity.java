@@ -48,7 +48,6 @@ public class Merra2VariableEntity implements SiaVariableEntity {
     this.byteLength = merra2VariableMetadata.getByteSize();
     this.blockHosts = merra2VariableMetadata.getBlockHosts();
     this.geometryID = merra2VariableMetadata.getGeometryID();
-    System.out.println("------------------- " + merra2VariableMetadata.getGeometryID());
     this.compressionCode = merra2VariableMetadata.getCompressionCode();
   }
 

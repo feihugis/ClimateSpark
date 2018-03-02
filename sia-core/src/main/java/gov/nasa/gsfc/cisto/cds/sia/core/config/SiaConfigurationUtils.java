@@ -177,15 +177,23 @@ public class SiaConfigurationUtils {
          * Framework indexer keys.
          */
         FRAMEWORK("mapreduce.framework.name"),
-        /**
-         * Xml hibernate table mapping file path indexer keys.
-         */
-        XML_HIBERNATE_TABLE_MAPPING_FILE_PATH("xml.hibernate.table.mapping.file.path"),
+
         /**
          * Files per map task indexer keys.
          */
-        FILES_PER_MAP_TASK("files.per.map.task")
-        ;
+        FILES_PER_MAP_TASK("files.per.map.task"),
+
+        HIBERNATE_DRIEVER(ConfigParameterKeywords.HIBERNATE_DRIEVER),
+
+        HIBERNATE_URL(ConfigParameterKeywords.HIBERNATE_URL),
+
+        HIBERNATE_USER(ConfigParameterKeywords.HIBERNATE_USER),
+
+        HIBERNATE_PASS(ConfigParameterKeywords.HIBERNATE_PASS),
+
+        HIBERNATE_DIALECT(ConfigParameterKeywords.HIBERNATE_DIALECT),
+
+        HIBERNATE_HBM2DDL_AUTO(ConfigParameterKeywords.HIBERNATE_HBM2DDL_AUTO);
 
 
         /**

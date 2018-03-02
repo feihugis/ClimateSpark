@@ -66,32 +66,15 @@ public class IndexDriver extends Configured implements Tool {
 
     // Create the user properties object and then bundle it up so it can be put into hadoop configuration
     UserProperties userProperties = indexerConfiguration.buildUserProperties();
-    String userPropertiesSerialized = SiaConfigurationUtils.serializeObject(userProperties);
-    // Create the dataset and collection objects and then bundle them up so they can be put into hadoop configuration
-    SiaDataset siaDataset = indexerConfiguration.buildSIADataset(userProperties);
-    String siaDatasetSerialized = SiaConfigurationUtils.serializeObject(siaDataset);
-    SiaCollection siaCollection = indexerConfiguration.buildSIACollection(userProperties);
-    String siaCollectionSerialized = SiaConfigurationUtils.serializeObject(siaCollection);
-    String siaDatasetClass = siaDataset.getClass().toString().split(" ")[1];
-    String siaCollectionClass = siaCollection.getClass().toString().split(" ")[1];
+    //String userPropertiesSerialized = SiaConfigurationUtils.serializeObject(userProperties);
 
-    /**
-    org.hibernate.cfg.Configuration config = new org.hibernate.cfg.Configuration();
-    ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap(config.configure(siaDataset.getHibernateConfigXmlFile()).getProperties());
-    String hibernateConfigSerialized = SiaConfigurationUtils.serializeObject(concurrentHashMap);
-
-    String hibConf = xmlToString("/merra_indexer_db.cfg.xml");
-**/
 
     // Setup the hadoop configuration
     Configuration hadoopConfiguration = getConf();
+
+    //Add all configurations to Hadoop configurations
     SiaConfigurationUtils.addKeysToHadoopConfiguration(indexerConfiguration.getBaseConfiguration(), hadoopConfiguration);
-    hadoopConfiguration.set(ConfigParameterKeywords.userPropertiesSerialized, userPropertiesSerialized);
-    hadoopConfiguration.set(ConfigParameterKeywords.siaDatasetSerialized, siaDatasetSerialized);
-    hadoopConfiguration.set(ConfigParameterKeywords.siaCollectionSerialized, siaCollectionSerialized);
-    hadoopConfiguration.set(ConfigParameterKeywords.siaDatasetClass, siaDatasetClass);
-    hadoopConfiguration.set(ConfigParameterKeywords.siaCollectionClass, siaCollectionClass);
-//    hadoopConfiguration.set(ConfigParameterKeywords.hibernateConfigSerialized, hibernateConfigSerialized);
+    //hadoopConfiguration.set(ConfigParameterKeywords.userPropertiesSerialized, userPropertiesSerialized);
 
     Job indexerJob = indexerConfiguration.createHadoopJob(hadoopConfiguration, userProperties);
     indexerJob.setJarByClass(IndexDriver.class);

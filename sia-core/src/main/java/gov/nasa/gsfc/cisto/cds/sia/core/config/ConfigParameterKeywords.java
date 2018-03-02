@@ -64,6 +64,16 @@ public final class ConfigParameterKeywords {
    */
   public static final String variableNames = "variableNames";
 
+  public static final String VARIABLE_NAMES = "variable.names";
+
+  public static final String FILES_PER_MAP_TASKS = "files.per.map.task";
+
+  public static final String DATASET_NAME = "dataset.name";
+
+  public static final String COLLECTION_NAME = "collection.name";
+
+  public static final String FILE_EXTENSION = "file.extension";
+
   /**
    * The constant numberReducers.
    */
@@ -83,5 +93,13 @@ public final class ConfigParameterKeywords {
    * The constant validMax.
    */
   public static final String validMax = "validMax";
+
+  //Hibernate
+  public static final String HIBERNATE_DRIEVER = "hibernate.connection.driver_class";  //org.postgresql.Driver
+  public static final String HIBERNATE_URL = "hibernate.connection.url";  //jdbc:postgresql://localhost:5432/hibernate_test
+  public static final String HIBERNATE_USER = "hibernate.connection.username";
+  public static final String HIBERNATE_PASS = "hibernate.connection.password";
+  public static final String HIBERNATE_DIALECT = "hibernate.dialect";  //org.hibernate.dialect.PostgreSQL9Dialect
+  public static final String HIBERNATE_HBM2DDL_AUTO = "hibernate.hbm2ddl.auto"; //update
 
 }
