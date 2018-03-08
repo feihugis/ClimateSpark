@@ -110,4 +110,8 @@ public final class ConfigParameterKeywords {
   public static final String RAW_DATA_FORMAT = "rawdataformat";
   public static final String STATISTICAL_INTERVAL_TYPE = "statistic.interval.type";
 
+  public static final String  MERRA2_FILE_PATH_METADATA_TABLE_NAME = "merra2_file_path_metadata";
+
+  public static final String  MERRA_FILE_PATH_METADATA_TABLE_NAME = "merra_file_path_metadata";
+
 }

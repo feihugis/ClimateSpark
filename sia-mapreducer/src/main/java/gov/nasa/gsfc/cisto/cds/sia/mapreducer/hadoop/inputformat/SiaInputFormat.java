@@ -17,6 +17,8 @@ import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntityFactor
 import gov.nasa.gsfc.cisto.cds.sia.hibernate.HibernateUtil;
 import gov.nasa.gsfc.cisto.cds.sia.hibernate.PhysicalNameStrategyImpl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -27,12 +29,10 @@ import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
-import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.inputformat.SiaInputSplitFactory.integerListToIntArray;
@@ -44,6 +44,8 @@ import static gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.inputformat.SiaInput
  * Created by Fei Hu on 9/12/16.
  */
 public class SiaInputFormat extends FileInputFormat {
+  public static final Log LOG = LogFactory.getLog(SiaInputFormat.class);
+
   //private String indexDBConfig = "merra_indexer_db.cfg.xml";
   private int[] queryCorner = null;
   private int[] queryShape = null;
@@ -126,27 +128,8 @@ public class SiaInputFormat extends FileInputFormat {
     hibernateUtil.closeSession();
     hibernateUtil.shutdown();
 
-    hibernateUtil = new HibernateUtil();
-    List<Class> mappingClassList = new ArrayList<Class>();
-    mappingClassList.add(MerraMetadata.class);
-    mappingClassList.add(MerraVariableMetadata.class);
-    mappingClassList.add(MerraFilePathMetadata.class);
-    mappingClassList.add(Merra2Metadata.class);
-    mappingClassList.add(Merra2VariableMetadata.class);
-    mappingClassList.add(Merra2FilePathMetadata.class);
 
-    hibernateUtil.createSessionFactory(job.getConfiguration(), mappingClassList);
-    session = hibernateUtil.getSession();
-
-    dao.setSession(session);
-
-    String queryFilePath = String.format("from merra2_file_path_metadata");
-    System.out.println("*********" + queryFilePath);
-
-    List<Merra2FilePathMetadata> filePathMetadataList = dao.findByQuery(queryFilePath, Merra2FilePathMetadata.class);
-    System.out.println("************" + filePathMetadataList.size());
-
-
+    HashMap<Integer, String> temporalToFilePathMap = getTemporalToFilePathMap(datasetName, job.getConfiguration(), collectionName, startDate, endDate);
 
     for (SiaVariableEntity entity : merraVariableEntityRetrieved) {
       int[] corner = stringToIntArray(entity.getCorner(), ",");
@@ -155,19 +138,12 @@ public class SiaInputFormat extends FileInputFormat {
 
       String[] dimensions = stringListToStringArray(siaVariableMetadata.getDimensionOrder());
 
-      SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
-      siaFilePathCompositeKey.setCollectionName(collectionName.toLowerCase());
-      siaFilePathCompositeKey.setTemporalKey(entity.getTemporalComponent());
-
-      Object siaFilePathMetadataObject = getSiaFilePathMetadataClass(datasetName);
-      SiaFilePathMetadata siaFilePathMetadata = (SiaFilePathMetadata) dao.findFilePathByKey(siaFilePathMetadataObject.getClass(), siaFilePathCompositeKey);
-
       SiaChunk siaChunk = new SiaChunk(corner, chunkShape,
                                        dimensions,
                                        entity.getByteOffset(), entity.getByteLength(),
                                        entity.getCompressionCode(), entity.getBlockHosts().split(";") ,
                                        dataType, varName,
-                                       siaFilePathMetadata.getFilePath(),
+                                       temporalToFilePathMap.get(entity.getTemporalComponent()),
                                        entity.getTemporalComponent(), "0");
       siaChunks.add(siaChunk);
     }
@@ -196,11 +172,6 @@ public class SiaInputFormat extends FileInputFormat {
   private SiaVariableMetadata getSiaVariableMetaData(String varName,
                                                      String dataset, String collectionName, Configuration hadoopConf)
       throws IOException {
-   /* SessionFactory sessionFactory = HibernateUtils.createSessionFactory(hibernateConf);  //sia_metadata_db.cfg.xml
-
-    DAOImpl dao = new DAOImpl();
-    Session session = sessionFactory.openSession();
-    dao.setSession(session);*/
 
     HibernateUtil hibernateUtil = new HibernateUtil();
     List<Class> mappingClassList = new ArrayList<Class>();
@@ -233,6 +204,61 @@ public class SiaInputFormat extends FileInputFormat {
     }
 
     return siaVariableMetadata;
+  }
+
+  public HashMap<Integer, String> getTemporalToFilePathMap(String datasetName, Configuration hadoopConf, String collectionName, int startDate, int endDate) {
+    HibernateUtil hibernateUtil = new HibernateUtil();
+    List<Class> mappingClassList = new ArrayList<Class>();
+    mappingClassList.add(MerraMetadata.class);
+    mappingClassList.add(MerraVariableMetadata.class);
+    mappingClassList.add(MerraFilePathMetadata.class);
+    mappingClassList.add(Merra2Metadata.class);
+    mappingClassList.add(Merra2VariableMetadata.class);
+    mappingClassList.add(Merra2FilePathMetadata.class);
+    mappingClassList.add(SiaFilePathMetadata.class);
+
+    hibernateUtil.createSessionFactory(hadoopConf, mappingClassList);
+    Session session = hibernateUtil.getSession();
+    gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl<SiaFilePathMetadata>
+        dao = new gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl<SiaFilePathMetadata>();
+    dao.setSession(session);
+
+    String tableName = "";
+    Class mappingClass = null;
+    switch (datasetName.toLowerCase()) {
+      case "merra2":
+        tableName = ConfigParameterKeywords.MERRA2_FILE_PATH_METADATA_TABLE_NAME;
+        mappingClass = Merra2FilePathMetadata.class;
+        break;
+      case "merra":
+        tableName = ConfigParameterKeywords.MERRA_FILE_PATH_METADATA_TABLE_NAME;
+        mappingClass = MerraFilePathMetadata.class;
+        break;
+      default:
+        LOG.error("Do not support this kind of dataset file path metadata : " + datasetName);
+        break;
+    }
+
+    String queryFilePath = String.format("from %s where collection_name = '%s' "
+                                         + "and temporal_key >= %d "
+                                         + "and temporal_key <= %d",
+                                         tableName,
+                                         collectionName.toLowerCase(),
+                                         startDate,
+                                         endDate);
+
+    LOG.info("SQL for querying file path : " + queryFilePath);
+
+    List<SiaFilePathMetadata> filePathMetadataList = (List<SiaFilePathMetadata>) dao.findByQuery(queryFilePath, mappingClass);
+
+    HashMap<Integer, String> temporalToFilePathMap = new HashMap<Integer, String>();
+    for (SiaFilePathMetadata siaFilePathMetadata : filePathMetadataList) {
+      temporalToFilePathMap.put(siaFilePathMetadata.getSiaFilePathCompositeKey().getTemporalKey(), siaFilePathMetadata.getFilePath());
+    }
+
+    LOG.info("************ Number of file path : " + temporalToFilePathMap.size());
+
+    return temporalToFilePathMap;
   }
 
 
