@@ -92,7 +92,7 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
     Configuration conf = jobContext.getConfiguration();
     FileSystem fileSystem = FileSystem.get(conf);
 
-    SpatiotemporalFilters spatiotemporalFilters = (SpatiotemporalFilters) SiaConfigurationUtils.
+    final SpatiotemporalFilters spatiotemporalFilters = (SpatiotemporalFilters) SiaConfigurationUtils.
         deserializeObject(conf.get(ConfigParameterKeywords.spatiotemporalFiltersSerialized),
                           SpatiotemporalFilters.class);
 
