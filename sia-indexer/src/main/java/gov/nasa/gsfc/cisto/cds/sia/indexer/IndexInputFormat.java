@@ -1,7 +1,9 @@
 package gov.nasa.gsfc.cisto.cds.sia.indexer;
 
+import gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils;
 import gov.nasa.gsfc.cisto.cds.sia.core.config.ConfigParameterKeywords;
 import gov.nasa.gsfc.cisto.cds.sia.core.config.SiaConfigurationUtils;
+import gov.nasa.gsfc.cisto.cds.sia.core.config.SpatiotemporalFilters;
 import gov.nasa.gsfc.cisto.cds.sia.core.config.UserProperties;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
@@ -20,7 +22,7 @@ import java.util.List;
 /**
  * Custom input format for index builder
  *
- * @author mkbowen
+ * @author Fei Hu
  *
  */
 public class IndexInputFormat extends FileInputFormat<Text, Text> {
@@ -90,6 +92,10 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
     Configuration conf = jobContext.getConfiguration();
     FileSystem fileSystem = FileSystem.get(conf);
 
+    SpatiotemporalFilters spatiotemporalFilters = (SpatiotemporalFilters) SiaConfigurationUtils.
+        deserializeObject(conf.get(ConfigParameterKeywords.spatiotemporalFiltersSerialized),
+                          SpatiotemporalFilters.class);
+
     List<Path> fileList = new ArrayList<Path>();
     RemoteIterator<LocatedFileStatus> fileStatusRemoteIterator = fileSystem.listFiles(getInputPaths(jobContext)[0], true);
     while(fileStatusRemoteIterator.hasNext()){
@@ -101,13 +107,32 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
 
     final String fileExtension = conf.get(ConfigParameterKeywords.FILE_EXTENSION);
 
-    PathFilter filter = new PathFilter() {
+
+    PathFilter pathFilter = new PathFilter() {
       public boolean accept(Path path) {
-        return path.getName().endsWith(fileExtension);
+        Configuration hconf = new Configuration();
+        try {
+          FileSystem fs = FileSystem.get(hconf);
+          if (fs.isDirectory(path)) {
+            return true;
+          } else {
+            if (path.toString().endsWith(fileExtension)) {
+              String[] strs = path.toString().split("\\.");
+              int time = Integer.parseInt(strs[strs.length-2]);
+              return time <= spatiotemporalFilters.getEndDate() && time >= spatiotemporalFilters.getStartDate();
+            } else {
+              return false;
+            }
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        return false;
       }
     };
 
-    FileStatus[] filteredFileArray = fileSystem.listStatus(filePathArray, filter);
+
+    FileStatus[] filteredFileArray = fileSystem.listStatus(filePathArray, pathFilter);
 
     return new ArrayList<FileStatus>(Arrays.asList(filteredFileArray));
   }
@@ -128,5 +153,4 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
 
     return recordReader;
   }
-
 }

@@ -215,7 +215,65 @@ public class SiaConfigurationUtils {
 
         HIBERNATE_DIALECT(ConfigParameterKeywords.HIBERNATE_DIALECT),
 
-        HIBERNATE_HBM2DDL_AUTO(ConfigParameterKeywords.HIBERNATE_HBM2DDL_AUTO);
+        HIBERNATE_HBM2DDL_AUTO(ConfigParameterKeywords.HIBERNATE_HBM2DDL_AUTO),
+
+        /**
+         * The Year start.
+         */
+        // Spatiotemporal Input Parameters
+        YEAR_START("year.start"),
+        /**
+         * Year end mapreducer keys.
+         */
+        YEAR_END("year.end"),
+        /**
+         * Month start mapreducer keys.
+         */
+        MONTH_START("month.start"),
+        /**
+         * Month end mapreducer keys.
+         */
+        MONTH_END("month.end"),
+        /**
+         * Day start mapreducer keys.
+         */
+        DAY_START("day.start"),
+        /**
+         * Day end mapreducer keys.
+         */
+        DAY_END("day.end"),
+        /**
+         * Hour start mapreducer keys.
+         */
+        HOUR_START("hour.start"),
+        /**
+         * Hour end mapreducer keys.
+         */
+        HOUR_END("hour.end"),
+        /**
+         * Height start mapreducer keys.
+         */
+        HEIGHT_START("height.start"),
+        /**
+         * Height end mapreducer keys.
+         */
+        HEIGHT_END("height.end"),
+        /**
+         * Lat start mapreducer keys.
+         */
+        LAT_START("lat.start"),
+        /**
+         * Lat end mapreducer keys.
+         */
+        LAT_END("lat.end"),
+        /**
+         * Lon start mapreducer keys.
+         */
+        LON_START("lon.start"),
+        /**
+         * Lon end mapreducer keys.
+         */
+        LON_END("lon.end");
 
 
         /**

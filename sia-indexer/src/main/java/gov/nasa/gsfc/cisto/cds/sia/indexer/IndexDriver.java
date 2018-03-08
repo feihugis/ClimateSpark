@@ -63,6 +63,8 @@ public class IndexDriver extends Configured implements Tool {
     SiaConfigurationFactory siaConfigurationFactory = new SiaConfigurationFactory();
     SiaConfiguration indexerConfiguration = siaConfigurationFactory.getSiaConfiguration(jobType);
     indexerConfiguration.buildBaseConfiguration(args);
+    SpatiotemporalFilters spatiotemporalFilters = indexerConfiguration.buildSpatiotemporalFilters(null);
+    String spatiotemporalFiltersSerialized = SiaConfigurationUtils.serializeObject(spatiotemporalFilters);
 
     // Create the user properties object and then bundle it up so it can be put into hadoop configuration
     UserProperties userProperties = indexerConfiguration.buildUserProperties();
@@ -74,6 +76,8 @@ public class IndexDriver extends Configured implements Tool {
 
     //Add all configurations to Hadoop configurations
     SiaConfigurationUtils.addKeysToHadoopConfiguration(indexerConfiguration.getBaseConfiguration(), hadoopConfiguration);
+    hadoopConfiguration.set(ConfigParameterKeywords.spatiotemporalFiltersSerialized, spatiotemporalFiltersSerialized);
+
     //hadoopConfiguration.set(ConfigParameterKeywords.userPropertiesSerialized, userPropertiesSerialized);
 
     Job indexerJob = indexerConfiguration.createHadoopJob(hadoopConfiguration, userProperties);

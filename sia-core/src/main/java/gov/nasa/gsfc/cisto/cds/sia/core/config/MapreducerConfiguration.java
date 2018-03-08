@@ -129,37 +129,21 @@ public class MapreducerConfiguration extends CompositeConfiguration implements S
           validateBaseConfigIsBuilt();
           SpatiotemporalFilters.SpatiotemporalFiltersBuilder spatiotemporalFiltersBuilder = new SpatiotemporalFilters.SpatiotemporalFiltersBuilder();
 
-          /*if (dateType.toLowerCase().equals("monthly")) {
 
-          spatiotemporalFiltersBuilder.buildMonthlyFilter(baseConfig.getString("year.start"),
-                                  baseConfig.getString("month.start"),
-                                  baseConfig.getString("year.end"),
-                                  baseConfig.getString("month.end"));
-
-            //TODO fix the dateType word for other temporal types
-          } else if (dateType.toLowerCase().equals("hourly")) {
-            spatiotemporalFiltersBuilder.buildDailyFilter(baseConfig.getString("year.start"),
-                                baseConfig.getString("month.start"),
-                                baseConfig.getString("day.start"),
-                                baseConfig.getString("year.end"),
-                                baseConfig.getString("month.end"),
-                                baseConfig.getString("day.end"));
-          }*/
-
-      spatiotemporalFiltersBuilder.buildDailyFilter(baseConfig.getString("year.start"),
-                                                    baseConfig.getString("month.start"),
-                                                    baseConfig.getString("day.start"),
-                                                    baseConfig.getString("hour.start"),
-                                                    baseConfig.getString("height.start"),
-                                                    baseConfig.getString("lat.start"),
-                                                    baseConfig.getString("lon.start"),
-                                                    baseConfig.getString("year.end"),
-                                                    baseConfig.getString("month.end"),
-                                                    baseConfig.getString("day.end"),
-                                                    baseConfig.getString("hour.start"),
-                                                    baseConfig.getString("height.start"),
-                                                    baseConfig.getString("lat.start"),
-                                                    baseConfig.getString("lon.start"));
+          spatiotemporalFiltersBuilder.buildDailyFilter(baseConfig.getString("year.start"),
+                                                        baseConfig.getString("month.start"),
+                                                        baseConfig.getString("day.start"),
+                                                        baseConfig.getString("hour.start"),
+                                                        baseConfig.getString("height.start"),
+                                                        baseConfig.getString("lat.start"),
+                                                        baseConfig.getString("lon.start"),
+                                                        baseConfig.getString("year.end"),
+                                                        baseConfig.getString("month.end"),
+                                                        baseConfig.getString("day.end"),
+                                                        baseConfig.getString("hour.start"),
+                                                        baseConfig.getString("height.start"),
+                                                        baseConfig.getString("lat.start"),
+                                                        baseConfig.getString("lon.start"));
 
           SpatiotemporalFilters spatiotemporalFilters = spatiotemporalFiltersBuilder
             .hourStart(baseConfig.getString("hour.start"))
