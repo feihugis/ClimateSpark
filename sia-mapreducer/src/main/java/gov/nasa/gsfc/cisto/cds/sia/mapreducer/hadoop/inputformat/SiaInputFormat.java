@@ -225,18 +225,15 @@ public class SiaInputFormat extends FileInputFormat {
 
     String tableName = "";
     Class mappingClass = null;
-    switch (datasetName.toLowerCase()) {
-      case "merra2":
-        tableName = ConfigParameterKeywords.MERRA2_FILE_PATH_METADATA_TABLE_NAME;
-        mappingClass = Merra2FilePathMetadata.class;
-        break;
-      case "merra":
+    if (datasetName.toLowerCase().equals("merra2")) {
+
+      tableName = ConfigParameterKeywords.MERRA2_FILE_PATH_METADATA_TABLE_NAME;
+      mappingClass = Merra2FilePathMetadata.class;
+    } else  if (datasetName.toLowerCase().equals("merra")) {
         tableName = ConfigParameterKeywords.MERRA_FILE_PATH_METADATA_TABLE_NAME;
         mappingClass = MerraFilePathMetadata.class;
-        break;
-      default:
+    } else {
         LOG.error("Do not support this kind of dataset file path metadata : " + datasetName);
-        break;
     }
 
     String queryFilePath = String.format("from %s where collection_name = '%s' "
