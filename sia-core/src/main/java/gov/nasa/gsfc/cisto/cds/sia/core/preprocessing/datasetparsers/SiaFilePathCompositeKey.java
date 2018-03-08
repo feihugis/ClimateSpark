@@ -18,7 +18,7 @@ public class SiaFilePathCompositeKey implements Serializable {
      * The Temporal key.
      */
     @Column(name = "temporal_key", nullable = false, updatable = false)
-    protected String temporalKey;
+    protected Integer temporalKey;
 
     /**
      * Instantiates a new Sia file path composite key.
@@ -48,7 +48,7 @@ public class SiaFilePathCompositeKey implements Serializable {
      *
      * @return the temporal key
      */
-    public String getTemporalKey() {
+    public Integer getTemporalKey() {
         return temporalKey;
     }
 
@@ -57,7 +57,7 @@ public class SiaFilePathCompositeKey implements Serializable {
      *
      * @param temporalKey the temporal key
      */
-    public void setTemporalKey(String temporalKey) {
+    public void setTemporalKey(Integer temporalKey) {
         this.temporalKey = temporalKey;
     }
 

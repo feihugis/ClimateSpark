@@ -105,17 +105,17 @@ public class DAOImpl<T> implements DAO {
     }
 
     @Override
-    public List<T> findByQuery(String hqlQuery, Class cls) {
+    public List findByQuery(String hqlQuery, Class cls) {
       if(!isSetup()) {
         System.exit(-1);
       }
 
-      List<T> objects = null;
+      List objects = null;
 
       try {
         session.beginTransaction();
         objects = session.createSQLQuery("SELECT * " + hqlQuery).addEntity(cls).list();
-        session.close();
+        //session.close();
       } catch(Exception e) {
         System.err.println("Error when attempting to retrieve data via query: " + e);
         e.printStackTrace();

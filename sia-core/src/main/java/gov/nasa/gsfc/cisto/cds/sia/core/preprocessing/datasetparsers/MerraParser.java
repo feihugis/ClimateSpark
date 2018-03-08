@@ -385,7 +385,7 @@ public class MerraParser implements SiaParser {
         MerraFilePathMetadata merraFilePathMetadata = new MerraFilePathMetadata();
         SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
         siaFilePathCompositeKey.setCollectionName(merraMetadata.getCollectionName());
-        siaFilePathCompositeKey.setTemporalKey(temporalKey);
+        siaFilePathCompositeKey.setTemporalKey(Integer.parseInt(temporalKey));
         merraFilePathMetadata.setSiaFilePathCompositeKey(siaFilePathCompositeKey);
         merraFilePathMetadata.setSiaMetadata(merraMetadata);
         merraFilePathMetadata.setFilePath(filePath);

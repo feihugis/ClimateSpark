@@ -665,7 +665,7 @@ public class Merra2Parser implements SiaParser {
       Merra2FilePathMetadata merra2FilePathMetadata = new Merra2FilePathMetadata();
       SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
       siaFilePathCompositeKey.setCollectionName(merra2Metadata.getCollectionName());
-      siaFilePathCompositeKey.setTemporalKey(temporalKey);
+      siaFilePathCompositeKey.setTemporalKey(Integer.parseInt(temporalKey));
       merra2FilePathMetadata.setSiaFilePathCompositeKey(siaFilePathCompositeKey);
       merra2FilePathMetadata.setSiaMetadata(merra2Metadata);
       merra2FilePathMetadata.setFilePath(filePath);

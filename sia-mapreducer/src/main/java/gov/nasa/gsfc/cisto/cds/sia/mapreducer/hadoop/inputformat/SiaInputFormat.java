@@ -29,6 +29,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import sun.rmi.runtime.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,6 @@ public class SiaInputFormat extends FileInputFormat {
   public List<InputSplit> getSplits(JobContext job) throws IOException {
     conf = job.getConfiguration();
     List<InputSplit> inputSplits = new ArrayList<InputSplit>();
-
 
     SpatiotemporalFilters spatiotemporalFilters = (SpatiotemporalFilters) SiaConfigurationUtils.
         deserializeObject(conf.get(ConfigParameterKeywords.spatiotemporalFiltersSerialized),
@@ -139,6 +140,14 @@ public class SiaInputFormat extends FileInputFormat {
 
     dao.setSession(session);
 
+    String queryFilePath = String.format("from merra2_file_path_metadata");
+    System.out.println("*********" + queryFilePath);
+
+    List<Merra2FilePathMetadata> filePathMetadataList = dao.findByQuery(queryFilePath, Merra2FilePathMetadata.class);
+    System.out.println("************" + filePathMetadataList.size());
+
+
+
     for (SiaVariableEntity entity : merraVariableEntityRetrieved) {
       int[] corner = stringToIntArray(entity.getCorner(), ",");
 
@@ -148,7 +157,7 @@ public class SiaInputFormat extends FileInputFormat {
 
       SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
       siaFilePathCompositeKey.setCollectionName(collectionName.toLowerCase());
-      siaFilePathCompositeKey.setTemporalKey(Integer.toString(entity.getTemporalComponent()));
+      siaFilePathCompositeKey.setTemporalKey(entity.getTemporalComponent());
 
       Object siaFilePathMetadataObject = getSiaFilePathMetadataClass(datasetName);
       SiaFilePathMetadata siaFilePathMetadata = (SiaFilePathMetadata) dao.findFilePathByKey(siaFilePathMetadataObject.getClass(), siaFilePathCompositeKey);
