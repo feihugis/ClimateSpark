@@ -1,12 +1,16 @@
 package gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
+
+import ucar.ma2.InvalidRangeException;
 
 /**
  * The interface Sia parser.
@@ -30,4 +34,8 @@ public interface SiaParser {
      * @throws XMLStreamException the xml stream exception
      */
     void addAllCollectionsToDb(List<FileStatus> fileList) throws IOException, JAXBException, XMLStreamException;
+
+    void addAllCollectionToDB(List<FileStatus> fileList, gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl dao, Configuration hadoopConfig) throws IOException,
+                                                                                                                                               ParseException,
+                                                                                                                                               InvalidRangeException;
 }

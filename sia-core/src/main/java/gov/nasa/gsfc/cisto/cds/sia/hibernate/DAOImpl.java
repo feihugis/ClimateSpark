@@ -11,6 +11,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers.SiaFilePathCompositeKey;
+import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers.SiaVariableCompositeKey;
+
 /**
  * The type Dao.
  *
@@ -131,10 +134,10 @@ public class DAOImpl<T> implements DAO {
         try {
             session.beginTransaction();
             for(Object object: list) {
-                session.save(object);
+                session.saveOrUpdate(object);
             }
             session.getTransaction().commit();
-            session.close();
+            //session.close();
         } catch(Exception e) {
             System.err.println("Unable to insert list into database: " + e);
             e.printStackTrace();
@@ -149,9 +152,9 @@ public class DAOImpl<T> implements DAO {
 
         try {
             session.beginTransaction();
-            session.save(object);
+            session.saveOrUpdate(object);
             session.getTransaction().commit();
-            session.close();
+            //session.close();
         } catch(Exception e) {
             System.err.println("Unable to insert into database: " + e);
             e.printStackTrace();
@@ -167,7 +170,7 @@ public class DAOImpl<T> implements DAO {
             session.beginTransaction();
             session.save(tableName, object);
             session.getTransaction().commit();
-            session.close();
+            //session.close();
         } catch(Exception e) {
             session.getTransaction().rollback();
         }
@@ -190,7 +193,7 @@ public class DAOImpl<T> implements DAO {
           session.save(tableName, objectList.next());
         }
         session.getTransaction().commit();
-        session.close();
+        //session.close();
       } catch(Exception e) {
         session.getTransaction().rollback();
       }
@@ -204,7 +207,7 @@ public class DAOImpl<T> implements DAO {
         try {
             session.beginTransaction();
             session.update(object);
-            session.close();
+            //session.close();
         } catch(Exception e) {
             session.getTransaction().rollback();
         }
@@ -218,10 +221,44 @@ public class DAOImpl<T> implements DAO {
         try {
             session.beginTransaction();
             session.delete(name);
-            session.close();
+            //session.close();
         } catch(Exception e) {
             session.getTransaction().rollback();
         }
+    }
+
+    public Object findVariableByKey(Class type, SiaVariableCompositeKey siaVariableCompositeKey) {
+      if(!isSetup()) {
+        System.exit(-1);
+      }
+
+      Object result = null;
+
+      try {
+        result = session.get(type, siaVariableCompositeKey);
+      } catch(Exception e) {
+        System.err.println("Error when attempting to retrieve variable via composite key: " + e);
+        e.printStackTrace();
+        session.getTransaction().rollback();
+      }
+      return result;
+    }
+
+    public Object findFilePathByKey(Class type, SiaFilePathCompositeKey siaFilePathCompositeKey) {
+      if(!isSetup()) {
+        System.exit(-1);
+      }
+
+      Object result = null;
+
+      try {
+        result = session.get(type, siaFilePathCompositeKey);
+      } catch(Exception e) {
+        System.err.println("Error when attempting to retrieve file path via composite key: " + e);
+        e.printStackTrace();
+        session.getTransaction().rollback();
+      }
+      return result;
     }
 
     private boolean isSetup() {

@@ -39,7 +39,8 @@ object ClimateSparkDriver{
     val sparkConfig = new SparkConf().setMaster("local[4]").setAppName("Test")
     val sc = new SparkContext(sparkConfig)
     val climateSparkConfig = new ClimateSparkConfig("MERRA", "tavg1_2d_int_Nx", "my_job",
-      "/Users/feihu/Documents/Data/Merra1.5GB", "/Users/feihu/Desktop/output", "/Users/feihu/Documents/IDEAProjects/sia/sia-parent/sia-core/src/main/resources/merra_entity_map.hbm.xml",
+      "/Users/feihu/Documents/Data/Merra1.5GB", "/Users/feihu/Desktop/output",
+      "/Users/feihu/Documents/IDEAProjects/sia/sia-parent/sia-core/src/main/resources/merra_entity_map.hbm.xml",
       "CUCNVRN", "hdf", "local",
       "Aavg", "2000", "2016",
       "01", "03", "01", "31",

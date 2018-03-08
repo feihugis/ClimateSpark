@@ -47,7 +47,7 @@ public class IndexCombiner extends Reducer<Text, SiaGenericWritable, Text, SiaGe
 
     Class entityClass = SiaVariableEntityFactory.getSIAVariableEntity(whichDataset).getClass();
 
-    List<SiaVariableEntity> siaVariableEntityList = new ArrayList<>();
+    List<SiaVariableEntity> siaVariableEntityList = new ArrayList<SiaVariableEntity>();
 
     for (SiaGenericWritable value : values) {
       SiaVariableAttribute siaVariableAttribute = (SiaVariableAttribute) value.get();

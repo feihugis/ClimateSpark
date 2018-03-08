@@ -123,7 +123,29 @@ public class SiaConfigurationUtils {
         /**
          * Input path preprocessor keys.
          */
-        INPUT_PATH("input.path")
+        INPUT_PATH("input.path"),
+
+        HIBERNATE_DRIEVER(ConfigParameterKeywords.HIBERNATE_DRIEVER),
+
+        HIBERNATE_URL(ConfigParameterKeywords.HIBERNATE_URL),
+
+        HIBERNATE_USER(ConfigParameterKeywords.HIBERNATE_USER),
+
+        HIBERNATE_PASS(ConfigParameterKeywords.HIBERNATE_PASS),
+
+        HIBERNATE_DIALECT(ConfigParameterKeywords.HIBERNATE_DIALECT),
+
+        HIBERNATE_HBM2DDL_AUTO(ConfigParameterKeywords.HIBERNATE_HBM2DDL_AUTO),
+
+        TEMPORAL_RESOLUTION(ConfigParameterKeywords.TEMPORAL_RESOLUTION),
+
+        TEMPORAL_RANGE_START(ConfigParameterKeywords.TEMPORAL_RANGE_START),
+
+        TEMPORAL_RANGE_END(ConfigParameterKeywords.TEMPORAL_RANGE_END),
+
+        RAW_DATA_FORMAT(ConfigParameterKeywords.RAW_DATA_FORMAT),
+
+        STATISTICAL_INTERVAL_TYPE(ConfigParameterKeywords.STATISTICAL_INTERVAL_TYPE)
         ;
 
 
@@ -249,11 +271,11 @@ public class SiaConfigurationUtils {
         /**
          * Xml hibernate table mapping file path mapreducer keys.
          */
-        XML_HIBERNATE_TABLE_MAPPING_FILE_PATH("xml.hibernate.table.mapping.file.path"),
+        // XML_HIBERNATE_TABLE_MAPPING_FILE_PATH("xml.hibernate.table.mapping.file.path"),
         /**
          * Threads per node mapreducer keys.
          */
-        THREADS_PER_NODE("threads.per.node"),
+        // THREADS_PER_NODE("threads.per.node"),
         /**
          * Analytics operation mapreducer keys.
          */
@@ -261,12 +283,12 @@ public class SiaConfigurationUtils {
         /**
          * Number reducers mapreducer keys.
          */
-        NUMBER_REDUCERS("number.reducers"),
+        // NUMBER_REDUCERS("number.reducers"),
 
         /**
          * The Year start.
          */
-// Spatiotemporal Input Parameters
+        // Spatiotemporal Input Parameters
         YEAR_START("year.start"),
         /**
          * Year end mapreducer keys.
@@ -319,8 +341,20 @@ public class SiaConfigurationUtils {
         /**
          * Lon end mapreducer keys.
          */
-        LON_END("lon.end")
-        ;
+        LON_END("lon.end"),
+
+        HIBERNATE_DRIEVER(ConfigParameterKeywords.HIBERNATE_DRIEVER),
+
+        HIBERNATE_URL(ConfigParameterKeywords.HIBERNATE_URL),
+
+        HIBERNATE_USER(ConfigParameterKeywords.HIBERNATE_USER),
+
+        HIBERNATE_PASS(ConfigParameterKeywords.HIBERNATE_PASS),
+
+        HIBERNATE_DIALECT(ConfigParameterKeywords.HIBERNATE_DIALECT),
+
+        HIBERNATE_HBM2DDL_AUTO(ConfigParameterKeywords.HIBERNATE_HBM2DDL_AUTO)
+      ;
 
 
         /**

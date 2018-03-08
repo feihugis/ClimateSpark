@@ -11,6 +11,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import gov.nasa.gsfc.cisto.cds.sia.core.config.ConfigParameterKeywords;
@@ -104,6 +105,82 @@ public class HibernateUtil {
       StandardServiceRegistryBuilder.destroy(registry);
     }
   }
+
+  public <T> void createSessionFactoryWithPhysicalNamingStrategy(Configuration conf,
+                                                                 PhysicalNameStrategyImpl physicalNameStrategy,
+                                                                 List<Class<T>> mappingClassList) {
+    // Create registry builder
+    StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+
+    // Hibernate settings equivalent to hibernate.cfg.xml's properties
+    Map<String, String> settings = new HashMap<String, String>();
+    settings.put(Environment.DRIVER, conf.get(ConfigParameterKeywords.HIBERNATE_DRIEVER));
+    settings.put(Environment.URL, conf.get(ConfigParameterKeywords.HIBERNATE_URL));
+    settings.put(Environment.USER, conf.get(ConfigParameterKeywords.HIBERNATE_USER));
+    settings.put(Environment.PASS, conf.get(ConfigParameterKeywords.HIBERNATE_PASS));
+    settings.put(Environment.DIALECT, conf.get(ConfigParameterKeywords.HIBERNATE_DIALECT));
+    settings.put(Environment.HBM2DDL_AUTO, conf.get(ConfigParameterKeywords.HIBERNATE_HBM2DDL_AUTO));
+
+    // Apply settings
+    registryBuilder.applySettings(settings);
+
+    // Create registry
+    registry = registryBuilder.build();
+
+    try {
+      MetadataSources sources = new MetadataSources(registry);
+      for (Class<T> mappingClass : mappingClassList) {
+        sources.addAnnotatedClass(mappingClass);
+      }
+      //sources.addClass(mappingClass);
+      MetadataBuilder metadataBuilder = sources.getMetadataBuilder();
+
+      metadataBuilder.applyPhysicalNamingStrategy(physicalNameStrategy);
+      sessionFactory = metadataBuilder.build().buildSessionFactory();
+      threadLocal = new ThreadLocal<Session>();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.err.println("Hibernate session factory setup error: " + e);
+      StandardServiceRegistryBuilder.destroy(registry);
+    }
+  }
+
+  public void createSessionFactory(Configuration conf, List<Class> mappingClassList) {
+    // Create registry builder
+    StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+
+    // Hibernate settings equivalent to hibernate.cfg.xml's properties
+    Map<String, String> settings = new HashMap<String, String>();
+    settings.put(Environment.DRIVER, conf.get(ConfigParameterKeywords.HIBERNATE_DRIEVER));
+    settings.put(Environment.URL, conf.get(ConfigParameterKeywords.HIBERNATE_URL));
+    settings.put(Environment.USER, conf.get(ConfigParameterKeywords.HIBERNATE_USER));
+    settings.put(Environment.PASS, conf.get(ConfigParameterKeywords.HIBERNATE_PASS));
+    settings.put(Environment.DIALECT, conf.get(ConfigParameterKeywords.HIBERNATE_DIALECT));
+    settings.put(Environment.HBM2DDL_AUTO, conf.get(ConfigParameterKeywords.HIBERNATE_HBM2DDL_AUTO));
+
+    // Apply settings
+    registryBuilder.applySettings(settings);
+
+    // Create registry
+    registry = registryBuilder.build();
+
+    try {
+      MetadataSources sources = new MetadataSources(registry);
+      for (Class mappingClass : mappingClassList) {
+        sources.addAnnotatedClass(mappingClass);
+      }
+      MetadataBuilder metadataBuilder = sources.getMetadataBuilder();
+      sessionFactory = metadataBuilder.build().buildSessionFactory();
+      threadLocal = new ThreadLocal<Session>();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.err.println("Hibernate session factory setup error: " + e);
+      StandardServiceRegistryBuilder.destroy(registry);
+    }
+  }
+
 
   public Session getSession() {
     Session session = threadLocal.get();

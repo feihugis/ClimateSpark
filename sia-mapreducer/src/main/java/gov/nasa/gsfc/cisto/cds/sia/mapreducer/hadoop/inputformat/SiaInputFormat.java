@@ -13,6 +13,10 @@ import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.*;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers.SiaFilePathCompositeKey;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers.SiaVariableCompositeKey;
 import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntity;
+import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntityFactory;
+import gov.nasa.gsfc.cisto.cds.sia.hibernate.HibernateUtil;
+import gov.nasa.gsfc.cisto.cds.sia.hibernate.PhysicalNameStrategyImpl;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -38,9 +42,10 @@ import static gov.nasa.gsfc.cisto.cds.sia.mapreducer.hadoop.inputformat.SiaInput
  * Created by Fei Hu on 9/12/16.
  */
 public class SiaInputFormat extends FileInputFormat {
-  private String indexDBConfig = "merra_indexer_db.cfg.xml";
+  //private String indexDBConfig = "merra_indexer_db.cfg.xml";
   private int[] queryCorner = null;
   private int[] queryShape = null;
+  private Configuration conf;
 
   /**
    *
@@ -50,25 +55,25 @@ public class SiaInputFormat extends FileInputFormat {
    */
   @Override
   public List<InputSplit> getSplits(JobContext job) throws IOException {
-    Configuration conf = job.getConfiguration();
+    conf = job.getConfiguration();
     List<InputSplit> inputSplits = new ArrayList<InputSplit>();
 
-    UserProperties userProperties = (UserProperties) SiaConfigurationUtils.
-        deserializeObject(conf.get(ConfigParameterKeywords.userPropertiesSerialized),
-                          UserProperties.class);
 
     SpatiotemporalFilters spatiotemporalFilters = (SpatiotemporalFilters) SiaConfigurationUtils.
         deserializeObject(conf.get(ConfigParameterKeywords.spatiotemporalFiltersSerialized),
                           SpatiotemporalFilters.class);
 
-    indexDBConfig = getIndexDBConfigFile(userProperties.getDatasetName());
-
     int startDate = spatiotemporalFilters.getStartDate();
     int endDate = spatiotemporalFilters.getEndDate();
 
-    String[] varNames = userProperties.getVariableNames();
-    String collectionName = userProperties.getCollectionName();
-    String datasetName = userProperties.getDatasetName();
+    String[] varNames = conf.get(ConfigParameterKeywords.VARIABLE_NAMES).split(",");
+    String[] inputVarNames = new String[varNames.length];
+    for (int i = 0; i < inputVarNames.length; i++) {
+      inputVarNames[i] = varNames[i].trim();
+    }
+
+    String collectionName = conf.get(ConfigParameterKeywords.COLLECTION_NAME);
+    String datasetName = conf.get(ConfigParameterKeywords.DATASET_NAME);
 
     queryCorner = spatiotemporalFilters.getStartSpatialBounding();
     queryShape = new int[queryCorner.length];
@@ -78,9 +83,9 @@ public class SiaInputFormat extends FileInputFormat {
     }
 
 
-    for (String varName : varNames) {
+    for (String varName : inputVarNames) {
       try {
-        inputSplits.addAll(getSplits(job, varName, collectionName, datasetName, indexDBConfig, startDate, endDate));
+        inputSplits.addAll(getSplits(job, varName, collectionName, datasetName, startDate, endDate));
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -89,28 +94,51 @@ public class SiaInputFormat extends FileInputFormat {
     return inputSplits;
   }
 
-  public List<InputSplit> getSplits(JobContext job, String varName, String collectionName, String datasetName, String indexDBConfig, final int startDate, final int endDate)
+  public List<InputSplit> getSplits(JobContext job, String varName, String collectionName, String datasetName, final int startDate, final int endDate)
       throws Exception {
-    String metadataHibernateConf = "sia_metadata_db.cfg.xml";
-    SessionFactory sessionFactory1 = HibernateUtils.createSessionFactory(metadataHibernateConf);
-    DAOImpl dao1 = new DAOImpl();
-    Session session1 = sessionFactory1.openSession();
-    dao1.setSession(session1);
+    String tableName = String.format("%s_%s", varName.toString().toLowerCase(),
+                                     collectionName.toLowerCase());
+    Class entityClass = SiaVariableEntityFactory.getSIAVariableEntity(datasetName).getClass();
 
-    SiaVariableMetadata siaVariableMetadata = getSiaVariableMetaData(metadataHibernateConf, varName, datasetName, collectionName);
+    PhysicalNameStrategyImpl physicalNameStrategy = new PhysicalNameStrategyImpl(tableName);
+    HibernateUtil hibernateUtil = new HibernateUtil();
+
+    hibernateUtil.createSessionFactoryWithPhysicalNamingStrategy(conf,
+                                                                 physicalNameStrategy,
+                                                                 entityClass);
+    Session session = hibernateUtil.getSession();
+    gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl<SiaVariableEntity>
+        dao = new gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl<SiaVariableEntity>();
+    dao.setSession(session);
+
+    String query = String.format("from %s where temporal_component >= %d and temporal_component <= %d", tableName, startDate, endDate);
+    List<SiaVariableEntity> merraVariableEntityRetrieved = (List<SiaVariableEntity>) dao.findByQuery(query, entityClass);
+
+
+    SiaVariableMetadata siaVariableMetadata = getSiaVariableMetaData(varName, datasetName, collectionName, job.getConfiguration());
     String dataType = siaVariableMetadata.getDataType();
     final int[] chunkShape = integerListToIntArray(siaVariableMetadata.getChunkSizes());
 
-    SessionFactory sessionFactory = HibernateUtils.createSessionFactory(indexDBConfig);
-    DAOImpl dao = new DAOImpl();
-    Session session = sessionFactory.openSession();
-    dao.setSession(session);
-    String tableName = varName.toLowerCase() + "_" + collectionName.toLowerCase();
-    String query = String.format("from %s where temporal_component >= %d and temporal_component <= %d", tableName, startDate, endDate);
-    //System.out.println("Query: " + query);
-    List<SiaVariableEntity> merraVariableEntityRetrieved = (List<SiaVariableEntity>) dao.findByQuery(query);
 
     List<SiaChunk> siaChunks = new ArrayList<SiaChunk>();
+
+    hibernateUtil.closeSession();
+    hibernateUtil.shutdown();
+
+    hibernateUtil = new HibernateUtil();
+    List<Class> mappingClassList = new ArrayList<Class>();
+    mappingClassList.add(MerraMetadata.class);
+    mappingClassList.add(MerraVariableMetadata.class);
+    mappingClassList.add(MerraFilePathMetadata.class);
+    mappingClassList.add(Merra2Metadata.class);
+    mappingClassList.add(Merra2VariableMetadata.class);
+    mappingClassList.add(Merra2FilePathMetadata.class);
+
+    hibernateUtil.createSessionFactory(job.getConfiguration(), mappingClassList);
+    session = hibernateUtil.getSession();
+
+    dao.setSession(session);
+
     for (SiaVariableEntity entity : merraVariableEntityRetrieved) {
       int[] corner = stringToIntArray(entity.getCorner(), ",");
 
@@ -118,14 +146,12 @@ public class SiaInputFormat extends FileInputFormat {
 
       String[] dimensions = stringListToStringArray(siaVariableMetadata.getDimensionOrder());
 
-      //System.out.println("Entity: " + entity.getByteLength() + " time: " + entity.getTemporalComponent());
-
       SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
-      siaFilePathCompositeKey.setCollectionName(collectionName);
+      siaFilePathCompositeKey.setCollectionName(collectionName.toLowerCase());
       siaFilePathCompositeKey.setTemporalKey(Integer.toString(entity.getTemporalComponent()));
 
       Object siaFilePathMetadataObject = getSiaFilePathMetadataClass(datasetName);
-      SiaFilePathMetadata siaFilePathMetadata = (SiaFilePathMetadata) dao1.findFilePathByKey(siaFilePathMetadataObject.getClass(), siaFilePathCompositeKey);
+      SiaFilePathMetadata siaFilePathMetadata = (SiaFilePathMetadata) dao.findFilePathByKey(siaFilePathMetadataObject.getClass(), siaFilePathCompositeKey);
 
       SiaChunk siaChunk = new SiaChunk(corner, chunkShape,
                                        dimensions,
@@ -139,6 +165,9 @@ public class SiaInputFormat extends FileInputFormat {
 
     List<InputSplit> siaInputSplits = new ArrayList<InputSplit>();
     siaInputSplits.addAll(SiaInputSplitFactory.genSIAInputSplitByHosts(siaChunks));
+
+    hibernateUtil.closeSession();
+    hibernateUtil.shutdown();
     return siaInputSplits;
   }
 
@@ -155,27 +184,35 @@ public class SiaInputFormat extends FileInputFormat {
     return GeneralClassLoader.loadObject(siaFilePathMetadataClass, null, null);
   }
 
-  private String getIndexDBConfigFile(String datasetName) {
-    if (datasetName.equals("MERRA")) return "merra_indexer_db.cfg.xml";
-    if (datasetName.equals("MERRA2")) return "merra2_indexer_db.cfg.xml";
-    throw new IllegalArgumentException("Please check the input dataset in the property file");
-  }
-
-
-
-  private SiaVariableMetadata getSiaVariableMetaData(String hibernateConf, String varName,
-                                                     String dataset, String collectionName)
+  private SiaVariableMetadata getSiaVariableMetaData(String varName,
+                                                     String dataset, String collectionName, Configuration hadoopConf)
       throws IOException {
-    SessionFactory sessionFactory = HibernateUtils.createSessionFactory(hibernateConf);  //sia_metadata_db.cfg.xml
+   /* SessionFactory sessionFactory = HibernateUtils.createSessionFactory(hibernateConf);  //sia_metadata_db.cfg.xml
 
     DAOImpl dao = new DAOImpl();
     Session session = sessionFactory.openSession();
+    dao.setSession(session);*/
+
+    HibernateUtil hibernateUtil = new HibernateUtil();
+    List<Class> mappingClassList = new ArrayList<Class>();
+    mappingClassList.add(MerraMetadata.class);
+    mappingClassList.add(MerraVariableMetadata.class);
+    mappingClassList.add(MerraFilePathMetadata.class);
+    mappingClassList.add(Merra2Metadata.class);
+    mappingClassList.add(Merra2VariableMetadata.class);
+    mappingClassList.add(Merra2FilePathMetadata.class);
+
+    hibernateUtil.createSessionFactory(hadoopConf, mappingClassList);
+    Session session = hibernateUtil.getSession();
+    gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl<SiaVariableMetadata>
+        dao = new gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl<SiaVariableMetadata>();
     dao.setSession(session);
+
     SiaVariableMetadata siaVariableMetadata;
     String datasetType = dataset.toLowerCase();
 
     SiaVariableCompositeKey siaVariableCompositeKey = new SiaVariableCompositeKey();
-    siaVariableCompositeKey.setCollectionName(collectionName);
+    siaVariableCompositeKey.setCollectionName(collectionName.toLowerCase());
     siaVariableCompositeKey.setVariableName(varName);
 
     if (datasetType.equals("merra")) {
@@ -188,6 +225,7 @@ public class SiaInputFormat extends FileInputFormat {
 
     return siaVariableMetadata;
   }
+
 
   @Override
   public org.apache.hadoop.mapreduce.RecordReader createRecordReader(InputSplit inputSplit,

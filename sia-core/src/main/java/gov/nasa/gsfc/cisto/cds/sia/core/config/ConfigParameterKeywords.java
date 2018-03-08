@@ -74,6 +74,8 @@ public final class ConfigParameterKeywords {
 
   public static final String FILE_EXTENSION = "file.extension";
 
+  public static final String INPUT_PATH = "input.path";
+
   /**
    * The constant numberReducers.
    */
@@ -101,5 +103,11 @@ public final class ConfigParameterKeywords {
   public static final String HIBERNATE_PASS = "hibernate.connection.password";
   public static final String HIBERNATE_DIALECT = "hibernate.dialect";  //org.hibernate.dialect.PostgreSQL9Dialect
   public static final String HIBERNATE_HBM2DDL_AUTO = "hibernate.hbm2ddl.auto"; //update
+
+  public static final String TEMPORAL_RESOLUTION = "temporal.resolution";
+  public static final String TEMPORAL_RANGE_START = "temporal.range.start";
+  public static final String TEMPORAL_RANGE_END = "temporal.range.end";
+  public static final String RAW_DATA_FORMAT = "rawdataformat";
+  public static final String STATISTICAL_INTERVAL_TYPE = "statistic.interval.type";
 
 }
