@@ -1,14 +1,11 @@
 package gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core
 
 import gov.nasa.gsfc.cisto.cds.sia.core.config.HadoopConfiguration
-import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.functions.ClimateRDDFunction._
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.SQLContext
-import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.ClimateSparkContext
-import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.{Cell3D, Cell4D, Cell5D}
+import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.Cell4D
 import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.core.io.datastructure.CellFactory._
+import gov.nasa.gsfc.cisto.cds.sia.scala.climatespark.functions.ClimateRDDFunction._
 import org.apache.spark.rdd.RDD
-import ucar.nc2.dataset.NetcdfDataset
+import org.apache.spark.sql.SQLContext
 
 /**
   * Created by Fei Hu on 12/22/16.
@@ -30,8 +27,9 @@ object SpatiotemporalQuery {
 
     val climateRDD = climateSparkContext.getClimateRDD
 
-    val monthlyAvg = climateRDD.monthlyAvg(1).toDF("VarName", "Time", "Avg")
-    monthlyAvg.show()
+    val monthlyAvg = climateRDD.monthlyAvg(1)//.toDF("VarName", "Time", "Avg")
+    //monthlyAvg.show()
+
 
     val cellRDD:RDD[Cell4D] = climateRDD.getCells.map(cell => cell.asInstanceOf[Cell4D])
     val pointRDD = cellRDD.map(cell => (cell.d0, cell.d1, -90.0 + 0.5*cell.d2, -180.0 + 0.625*cell.d3, cell.value))
