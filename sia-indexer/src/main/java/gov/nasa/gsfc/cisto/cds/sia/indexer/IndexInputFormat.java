@@ -1,7 +1,9 @@
 package gov.nasa.gsfc.cisto.cds.sia.indexer;
 
+import gov.nasa.gsfc.cisto.cds.sia.core.common.FileUtils;
 import gov.nasa.gsfc.cisto.cds.sia.core.config.ConfigParameterKeywords;
 import gov.nasa.gsfc.cisto.cds.sia.core.config.SiaConfigurationUtils;
+import gov.nasa.gsfc.cisto.cds.sia.core.config.SpatiotemporalFilters;
 import gov.nasa.gsfc.cisto.cds.sia.core.config.UserProperties;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
@@ -20,10 +22,11 @@ import java.util.List;
 /**
  * Custom input format for index builder
  *
- * @author mkbowen
+ * @author Fei Hu
  *
  */
 public class IndexInputFormat extends FileInputFormat<Text, Text> {
+  Configuration hadoopConfig;
 
   /**
    * Allows for fine-tuned control over the number of files each mapper processes
@@ -37,23 +40,33 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
    */
   @Override
   public List<InputSplit> getSplits(JobContext jobContext) throws IOException {
+    hadoopConfig = jobContext.getConfiguration();
     List<InputSplit> inputSplitList = new ArrayList<InputSplit>();
     FileSystem fileSystem = FileSystem.get(jobContext.getConfiguration());
-    UserProperties userProperties = (UserProperties) SiaConfigurationUtils.deserializeObject(jobContext.getConfiguration().get(ConfigParameterKeywords.userPropertiesSerialized), UserProperties.class);
-    String fileFormat = userProperties.getFileExtension();
+    //UserProperties userProperties = (UserProperties) SiaConfigurationUtils.deserializeObject(jobContext.getConfiguration().get(ConfigParameterKeywords.userPropertiesSerialized), UserProperties.class);
+
+    // in the listStatus function, the file extension has been used to filter out data with different
+    // formats
     List<FileStatus> fileStatusList = listStatus(jobContext);
     IndexSplit inputSplit = null;
     int numFilesInSplit = 0;
 
-    for (FileStatus file : fileStatusList) {
+    String[] varNames = hadoopConfig.get(ConfigParameterKeywords.VARIABLE_NAMES).split(",");
+    String[] inputVarNames = new String[varNames.length];
+    for (int i = 0; i < inputVarNames.length; i++) {
+      inputVarNames[i] = varNames[i].trim();
+    }
 
+    int inputFilesPerMapTask = hadoopConfig.getInt(ConfigParameterKeywords.FILES_PER_MAP_TASKS, 1);
+
+    for (FileStatus file : fileStatusList) {
       if (numFilesInSplit == 0) {
         String[] hosts = fileSystem.getFileBlockLocations(file, 0L, file.getLen())[0].getHosts();
-        inputSplit = new IndexSplit(userProperties.getVariableNames(), hosts);
+        inputSplit = new IndexSplit(inputVarNames, hosts);
       }
       inputSplit.addFilePath(file.getPath().toString());
       numFilesInSplit++;
-      if (numFilesInSplit == userProperties.getFilesPerMapTask()) {
+      if (numFilesInSplit == inputFilesPerMapTask) {
         inputSplitList.add(inputSplit);
         numFilesInSplit = 0;
       }
@@ -79,22 +92,47 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
     Configuration conf = jobContext.getConfiguration();
     FileSystem fileSystem = FileSystem.get(conf);
 
+    final SpatiotemporalFilters spatiotemporalFilters = (SpatiotemporalFilters) SiaConfigurationUtils.
+        deserializeObject(conf.get(ConfigParameterKeywords.spatiotemporalFiltersSerialized),
+                          SpatiotemporalFilters.class);
+
     List<Path> fileList = new ArrayList<Path>();
     RemoteIterator<LocatedFileStatus> fileStatusRemoteIterator = fileSystem.listFiles(getInputPaths(jobContext)[0], true);
     while(fileStatusRemoteIterator.hasNext()){
       LocatedFileStatus fileStatus = fileStatusRemoteIterator.next();
       fileList.add(fileStatus.getPath());
     }
+
     Path[] filePathArray = fileList.toArray(new Path[fileList.size()]);
 
-    PathFilter filter = new PathFilter() {
+    final String fileExtension = conf.get(ConfigParameterKeywords.FILE_EXTENSION);
+
+
+    PathFilter pathFilter = new PathFilter() {
       public boolean accept(Path path) {
-        UserProperties userProperties = (UserProperties) SiaConfigurationUtils.deserializeObject(jobContext.getConfiguration().get(ConfigParameterKeywords.userPropertiesSerialized), UserProperties.class);
-        return path.getName().endsWith(userProperties.getFileExtension());
+        Configuration hconf = new Configuration();
+        try {
+          FileSystem fs = FileSystem.get(hconf);
+          if (fs.isDirectory(path)) {
+            return true;
+          } else {
+            if (path.toString().endsWith(fileExtension)) {
+              String[] strs = path.toString().split("\\.");
+              int time = Integer.parseInt(strs[strs.length-2]);
+              return time <= spatiotemporalFilters.getEndDate() && time >= spatiotemporalFilters.getStartDate();
+            } else {
+              return false;
+            }
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        return false;
       }
     };
 
-    FileStatus[] filteredFileArray = fileSystem.listStatus(filePathArray, filter);
+
+    FileStatus[] filteredFileArray = fileSystem.listStatus(filePathArray, pathFilter);
 
     return new ArrayList<FileStatus>(Arrays.asList(filteredFileArray));
   }
@@ -115,5 +153,4 @@ public class IndexInputFormat extends FileInputFormat<Text, Text> {
 
     return recordReader;
   }
-
 }

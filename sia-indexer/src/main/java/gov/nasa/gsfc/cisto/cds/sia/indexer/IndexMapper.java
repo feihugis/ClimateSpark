@@ -47,9 +47,9 @@ public class IndexMapper extends Mapper<Text, Text, Text, SiaGenericWritable> {
     String[] variables = buildIndexValueVariables.toString().split(",");
     Configuration conf = context.getConfiguration();
     FileSystem fileSystem = FileSystem.get(conf);
-    UserProperties userProperties = (UserProperties) SiaConfigurationUtils.deserializeObject(conf.get(ConfigParameterKeywords.userPropertiesSerialized), UserProperties.class);
 
-    String whichVariableMetadata = userProperties.getDatasetName();
+    String whichVariableMetadata = conf.get(ConfigParameterKeywords.DATASET_NAME);
+
     variableMetadataFactory = new SiaVariableMetadataFactory();
     SiaVariableAttribute variableMetadata = variableMetadataFactory.getVariableMetadata(whichVariableMetadata);
     List<SiaVariableAttribute> siaVariableAttributeList = variableMetadata.getVariableMetadataList(fileSystem, file, variables);

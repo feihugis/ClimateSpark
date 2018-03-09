@@ -2,6 +2,8 @@ package gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetparsers;
 
 import gov.nasa.gsfc.cisto.cds.sia.core.HibernateUtils;
 import gov.nasa.gsfc.cisto.cds.sia.core.common.DAOImpl;
+import gov.nasa.gsfc.cisto.cds.sia.core.config.ConfigParameterKeywords;
+import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.PreprocessorDriver;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2FilePathMetadata;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2Metadata;
 import gov.nasa.gsfc.cisto.cds.sia.core.preprocessing.datasetentities.Merra2VariableMetadata;
@@ -13,6 +15,8 @@ import gov.nasa.gsfc.cisto.cds.sia.core.randomaccessfile.MerraRandomAccessFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -41,6 +45,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -48,26 +54,28 @@ import java.util.*;
  */
 public class Merra2Parser implements SiaParser {
 
-    private String xmlFile = "/merra2_collections.xml";
-    private static final int MIN_NUMBER_DIMENSIONS = 1;
-    private static final String VALID_MIN = "vmin";
-    private static final String VALID_MAX = "vmax";
-    private static final String MISSING_VALUE = "missing_value";
-    private static final String FILL_VALUE = "_FillValue";
-    private static final String ADD_OFFSET = "add_offset";
-    private static final String SCALE_FACTOR = "scale_factor";
-    private static final Integer NOT_APPLICABLE_INTEGER = -1;
-    private static final Float NOT_APPLICABLE_FLOAT = -1.0f;
-    private static final String TEMPORAL_DIMENSION = "time";
-    private static final String X_AXIS_SPATIAL_DIMENSION = "lon";
-    private static final String Y_AXIS_SPATIAL_DIMENSION = "lat";
-    private static final String Z_AXIS_SPATIAL_DIMENSION = "Height";
-    private static final Float FLOAT_DIVISOR_CONVERSION = 1.0f;
-    private static final Float DEFAULT_VALID_MIN = -9.9999999E14f;
-    private static final Float DEFAULT_VALID_MAX = 9.9999999E14f;
-    private static final Float DEFAULT_MISSING_VALUE = 9.9999999E14f;
-    private static final Float DEFAULT_FILL_VALUE = 9.9999999E14f;
-    private static final Float DEFAULT_HEIGHT = 1.0f;
+  private static final Log LOG = LogFactory.getLog(Merra2Parser.class);
+
+  private String xmlFile = "/merra2_collections.xml";
+  private static final int MIN_NUMBER_DIMENSIONS = 1;
+  private static final String VALID_MIN = "vmin";
+  private static final String VALID_MAX = "vmax";
+  private static final String MISSING_VALUE = "missing_value";
+  private static final String FILL_VALUE = "_FillValue";
+  private static final String ADD_OFFSET = "add_offset";
+  private static final String SCALE_FACTOR = "scale_factor";
+  private static final Integer NOT_APPLICABLE_INTEGER = -1;
+  private static final Float NOT_APPLICABLE_FLOAT = -1.0f;
+  private static final String TEMPORAL_DIMENSION = "time";
+  private static final String X_AXIS_SPATIAL_DIMENSION = "lon";
+  private static final String Y_AXIS_SPATIAL_DIMENSION = "lat";
+  private static final String Z_AXIS_SPATIAL_DIMENSION = "Height";
+  private static final Float FLOAT_DIVISOR_CONVERSION = 1.0f;
+  private static final Float DEFAULT_VALID_MIN = -9.9999999E14f;
+  private static final Float DEFAULT_VALID_MAX = 9.9999999E14f;
+  private static final Float DEFAULT_MISSING_VALUE = 9.9999999E14f;
+  private static final Float DEFAULT_FILL_VALUE = 9.9999999E14f;
+  private static final Float DEFAULT_HEIGHT = 1.0f;
 
 
     // Attributes for Collection
@@ -114,6 +122,79 @@ public class Merra2Parser implements SiaParser {
           .getFileList(fs, new Path(directoryPath), merra2PathFilter, fileList, true);
 
       return fileList;
+    }
+
+    public void addAllCollectionToDB(List<FileStatus> fileList, gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl dao, Configuration hadoopConfig)
+        throws IOException, ParseException, InvalidRangeException {
+      FileStatus sampleFile = fileList.get(0);
+      String collectionName = collectionNameFromFileName(sampleFile.getPath().getName());
+      LOG.info("collection name: " + collectionName);
+
+      //insert merra2metadata
+      Merra2Metadata merra2Metadata = new Merra2Metadata();
+      merra2Metadata.setCollectionName(collectionName);
+      merra2Metadata.setTemporalResolution(hadoopConfig.get(ConfigParameterKeywords.TEMPORAL_RESOLUTION));
+
+      Date temporalRangeStart = new SimpleDateFormat("yyyy-MM-dd").parse(hadoopConfig.get(ConfigParameterKeywords.TEMPORAL_RANGE_START));
+      Date temporalRangeEnd = new SimpleDateFormat("yyyy-MM-dd").parse(hadoopConfig.get(ConfigParameterKeywords.TEMPORAL_RANGE_END));
+      merra2Metadata.setTemporalRangeStart(temporalRangeStart);
+      merra2Metadata.setTemporalRangeEnd(temporalRangeEnd);
+      merra2Metadata.setRawDataFormat(hadoopConfig.get(ConfigParameterKeywords.RAW_DATA_FORMAT));
+      merra2Metadata.setStatisticalIntervalType(hadoopConfig.get(ConfigParameterKeywords.STATISTICAL_INTERVAL_TYPE));
+
+      dao.insert(merra2Metadata);
+
+      //insert file path
+      List<Merra2FilePathMetadata> merra2FilePathMetadataList = new ArrayList<Merra2FilePathMetadata>();
+      for(FileStatus file: fileList) {
+        if(merra2Metadata != null) {
+          String temporalKey = temporalKeyFromFileName(file.getPath().getName());
+          Merra2FilePathMetadata merraFilePathMetadata = buildMerra2FilePathMetadata(merra2Metadata, temporalKey, file.getPath().toString());
+          merra2FilePathMetadataList.add(merraFilePathMetadata);
+          //dao.insert(merraFilePathMetadata);
+        }
+      }
+
+      dao.insertList(merra2FilePathMetadataList);
+
+      MerraRandomAccessFile randomAccessFile = new MerraRandomAccessFile(sampleFile, new Configuration());
+      NetcdfFile netcdfFile = NetcdfFile.open(randomAccessFile, sampleFile.getPath().toString());
+      List<Variable> variableList = netcdfFile.getVariables();
+
+      List<Merra2VariableMetadata> merra2VariableMetadataList = new ArrayList<Merra2VariableMetadata>();
+      for(Variable variable: variableList) {
+        List<Dimension> dimensionList = variable.getDimensions();
+        List<DimensionAndShape> dimensionAndShapeList = buildDimensionAndShapeList(variable.getShape(), dimensionList);
+
+        if(dimensionList.size() > MIN_NUMBER_DIMENSIONS) {
+          Merra2VariableMetadata merra2VariableMetadata = new Merra2VariableMetadata();
+          ArrayList<Attribute> attributeList = (ArrayList) variable.getAttributes();
+          SiaVariableCompositeKey siaVariableCompositeKey = new SiaVariableCompositeKey();
+          siaVariableCompositeKey.setVariableName(variable.getShortName());
+          siaVariableCompositeKey.setCollectionName(merra2Metadata.getCollectionName());
+          merra2VariableMetadata.setSiaVariableCompositeKey(siaVariableCompositeKey);
+          merra2VariableMetadata.setSiaMetadata(merra2Metadata);
+          merra2VariableMetadata.setSpatialResolution(buildSpatialResolutionList(dimensionAndShapeList));
+          merra2VariableMetadata.setTemporalResolution(buildTemporalResolutionList(dimensionAndShapeList));
+          merra2VariableMetadata.setDimensionOrder(buildDimensionOrderList(dimensionList));
+          merra2VariableMetadata.setChunkSizes(getChunkSize(variable));
+          merra2VariableMetadata.setValidMin(findValidMin(attributeList));
+          merra2VariableMetadata.setValidMax(findValidMax(attributeList));
+          merra2VariableMetadata.setMissingValue(findMissingValue(attributeList));
+          merra2VariableMetadata.setFillValue(findFillValue(attributeList));
+          merra2VariableMetadata.setAddOffset(findAddOffset(attributeList));
+          merra2VariableMetadata.setScaleFactor(findScaleFactor(attributeList));
+          merra2VariableMetadata.setUnits(variable.getUnitsString());
+          merra2VariableMetadata.setDataType(variable.getDataType().toString());
+
+          merra2Metadata.getSiaVariableMetadataSet().add(merra2VariableMetadata);
+
+          //dao.insert(merra2VariableMetadata);
+          merra2VariableMetadataList.add(merra2VariableMetadata);
+        }
+      }
+
+      dao.insertList(merra2VariableMetadataList);
     }
 
     public void addAllCollectionsToDb(List<FileStatus> fileList) throws IOException, JAXBException, XMLStreamException {
@@ -584,7 +665,7 @@ public class Merra2Parser implements SiaParser {
       Merra2FilePathMetadata merra2FilePathMetadata = new Merra2FilePathMetadata();
       SiaFilePathCompositeKey siaFilePathCompositeKey = new SiaFilePathCompositeKey();
       siaFilePathCompositeKey.setCollectionName(merra2Metadata.getCollectionName());
-      siaFilePathCompositeKey.setTemporalKey(temporalKey);
+      siaFilePathCompositeKey.setTemporalKey(Integer.parseInt(temporalKey));
       merra2FilePathMetadata.setSiaFilePathCompositeKey(siaFilePathCompositeKey);
       merra2FilePathMetadata.setSiaMetadata(merra2Metadata);
       merra2FilePathMetadata.setFilePath(filePath);

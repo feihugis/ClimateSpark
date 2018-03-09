@@ -23,12 +23,15 @@ public class IndexRecordReader extends RecordReader<Text, Text> {
   private String[] fileArray;
 
   @Override
-  public void initialize(InputSplit arg0, TaskAttemptContext arg1) throws IOException, InterruptedException {
-    IndexSplit indexSplit = ((IndexSplit) arg0);
+  public void initialize(InputSplit inputSplit, TaskAttemptContext taskAttemptContext)
+      throws IOException, InterruptedException {
+    IndexSplit indexSplit = ((IndexSplit) inputSplit);
     List<String> fileList = indexSplit.getFileList();
     //TODO: Maybe we can directly use fileList
     this.fileArray = fileList.toArray(new String[fileList.size()]);
-    this.variableListString = Arrays.toString(indexSplit.getVariables()).replace("[", "").replace("]", "");
+    this.variableListString = Arrays.toString(indexSplit.getVariables())
+        .replace("[", "")
+        .replace("]", "");
   }
 
   @Override

@@ -68,19 +68,6 @@ public class MerraRandomAccessFile extends RandomAccessFile {
     @Override
     protected int read_(long pos, byte[] buf, int offset, int len) throws IOException {
         int n = this.hdfsFile.read(pos, buf, offset, len);
-
-        BlockLocation[] blockLocations = this.fileSystem.getFileBlockLocations(this.fileSystem.getFileStatus(new Path(this.location)), offset, len);
-        String[] hosts = blockLocations[0].getHosts();
-        String location = "";
-
-        for (String host : hosts) {
-            location = location + host + ",";
-        }
-
-        this.totalDataRead += len;
-        if (this.hostname.equals(hosts[0])) {
-            this.localHostDataRead += len;
-        }
         return n;
     }
 

@@ -92,10 +92,41 @@ public class IndexerConfiguration extends CompositeConfiguration implements SiaC
     }
 
   public SpatiotemporalFilters buildSpatiotemporalFilters(String dateType) {
-    throw new UnsupportedOperationException("Indexer does not support spatiotemporal filters.");
+    validateBaseConfigIsBuilt();
+    SpatiotemporalFilters.SpatiotemporalFiltersBuilder spatiotemporalFiltersBuilder = new SpatiotemporalFilters.SpatiotemporalFiltersBuilder();
+
+
+    spatiotemporalFiltersBuilder.buildDailyFilter(baseConfig.getString("year.start"),
+                                                  baseConfig.getString("month.start"),
+                                                  baseConfig.getString("day.start"),
+                                                  baseConfig.getString("hour.start"),
+                                                  baseConfig.getString("height.start"),
+                                                  baseConfig.getString("lat.start"),
+                                                  baseConfig.getString("lon.start"),
+                                                  baseConfig.getString("year.end"),
+                                                  baseConfig.getString("month.end"),
+                                                  baseConfig.getString("day.end"),
+                                                  baseConfig.getString("hour.start"),
+                                                  baseConfig.getString("height.start"),
+                                                  baseConfig.getString("lat.start"),
+                                                  baseConfig.getString("lon.start"));
+
+    SpatiotemporalFilters spatiotemporalFilters = spatiotemporalFiltersBuilder
+        .hourStart(baseConfig.getString("hour.start"))
+        .hourEnd(baseConfig.getString("hour.end"))
+        .heightStart(baseConfig.getString("height.start"))
+        .heightEnd(baseConfig.getString("height.end"))
+        .latStart(baseConfig.getString("lat.start"))
+        .latEnd(baseConfig.getString("lat.end"))
+        .lonStart(baseConfig.getString("lon.start"))
+        .lonEnd(baseConfig.getString("lon.end"))
+        .build();
+
+    return spatiotemporalFilters;
   }
 
-    public SiaDataset buildSIADataset(UserProperties userProperties) {
+
+  public SiaDataset buildSIADataset(UserProperties userProperties) {
         validateBaseConfigIsBuilt();
 
         SiaDatasetFactory siaDatasetFactory = new SiaDatasetFactory();
