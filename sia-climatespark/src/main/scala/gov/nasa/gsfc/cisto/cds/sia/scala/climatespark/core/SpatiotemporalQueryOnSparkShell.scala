@@ -15,11 +15,19 @@ import ucar.nc2.dataset.NetcdfDataset
   * Created by Fei Hu on 10/28/17.
   */
 object SpatiotemporalQueryOnSparkShell {
+
+  def time[R](block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block    // call-by-name
+    val t1 = System.nanoTime()
+    println("Elapsed time: " + (t1 - t0) + "ns")
+    result
+  }
+
   val sc = new SparkContext()
 
   def main(args: Array[String]) {
-    val input = Array[String]("/Users/feihu/Documents/IDEAProjects/ClimateSpark/properties/sia_analytics.properties")
-    val hadoopConf = new HadoopConfiguration(input).getHadoopConf
+    val hadoopConf = new HadoopConfiguration(args).getHadoopConf
     val climateSparkContext = new ClimateSparkContext(sc, hadoopConf)
     val sqlContext = new SQLContext(climateSparkContext.getSparkContext)
     import sqlContext.implicits._
@@ -28,12 +36,5 @@ object SpatiotemporalQueryOnSparkShell {
 
     val monthlyAvg = climateRDD.monthlyAvg(1).toDF("VarName", "Time", "Avg")
     monthlyAvg.show()
-
-
-    val cellRDD:RDD[Cell4D] = climateRDD.getCells.map(cell => cell.asInstanceOf[Cell4D])
-
-    val df = sqlContext.createDataFrame(cellRDD)
-    df.registerTempTable("merra")
-    sqlContext.sql("SELECT d0 AS date, d1 AS hour, d2 AS lat, d3 AS lon, value AS value FROM merra").show()
   }
 }
