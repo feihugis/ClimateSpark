@@ -27,8 +27,14 @@ object SpatiotemporalQuery {
 
     val climateRDD = climateSparkContext.getClimateRDD
 
-    val monthlyAvg = climateRDD.monthlyAvg(1).toDF("VarName", "Time", "Avg")
-    monthlyAvg.show()
+    val monthlyAvg = climateRDD.monthlyAvg(1)
+
+    val df = monthlyAvg.toDF("VarName", "Time", "Avg")
+    df.show()
+
+    val monthlyMeanArray = monthlyAvg.map(tuple => tuple._3).collect()
+
+    println("Monthly Avg: ", monthlyMeanArray.sum/monthlyMeanArray.size)
 
 
     //val cellRDD:RDD[Cell4D] = climateRDD.getCells.map(cell => cell.asInstanceOf[Cell4D])
