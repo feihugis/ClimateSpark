@@ -16,7 +16,6 @@ import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntity;
 import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntityFactory;
 import gov.nasa.gsfc.cisto.cds.sia.hibernate.HibernateUtil;
 import gov.nasa.gsfc.cisto.cds.sia.hibernate.PhysicalNameStrategyImpl;
-import jdk.internal.util.xml.impl.Input;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

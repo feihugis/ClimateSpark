@@ -149,7 +149,7 @@ public class SiaInputSplitFactory {
       int start = 0, end = start + insputSplitNumPerGroup;
       while (start < siaInputSplitsPerHost.size()) {
         List<SiaInputSplit> subSiaInputSplitList = siaInputSplitsPerHost
-            .subList(start, Math.min(end, siaInputSplitList.size()));
+            .subList(start, Math.min(end, siaInputSplitsPerHost.size()));
 
         GroupedSIAInputSplit groupedSIAInputSplit = new GroupedSIAInputSplit(subSiaInputSplitList,
                                                                              new String[]{host});

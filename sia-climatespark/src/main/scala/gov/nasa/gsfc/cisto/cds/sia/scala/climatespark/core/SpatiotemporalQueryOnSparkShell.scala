@@ -24,9 +24,7 @@ object SpatiotemporalQueryOnSparkShell {
     result
   }
 
-  val sc = new SparkContext()
-
-  def main(args: Array[String]) {
+  def query(sc: SparkContext, args: Array[String]) {
     val hadoopConf = new HadoopConfiguration(args).getHadoopConf
     val climateSparkContext = new ClimateSparkContext(sc, hadoopConf)
     val sqlContext = new SQLContext(climateSparkContext.getSparkContext)
