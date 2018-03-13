@@ -5,8 +5,15 @@ import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.Merra2VariableEntity;
 import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntity;
 import org.apache.hadoop.fs.FileStatus;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Fei Hu on 9/12/16.
@@ -65,11 +72,10 @@ public class SiaInputSplitFactory {
     return siaChunk;
   }
 
-  static public SiaChunk convertSIAVarEntityToSIAChunk (SiaVariableEntity siaVariableEntity, int[] shape, String[] dims, String varName, String filePathPrifix, String filePathSuffix) {
+  public static SiaChunk convertSIAVarEntityToSIAChunk (SiaVariableEntity siaVariableEntity, int[] shape, String[] dims, String varName, String filePathPrifix, String filePathSuffix) {
     SiaChunk siaChunk = null;
 
     //TODO: add merra-1 here
-
     if (siaVariableEntity.getClass().getName().equals(Merra2VariableEntity.class.getName())) {
       Merra2VariableEntity merra2VariableEntity = (Merra2VariableEntity) siaVariableEntity;
       String[] cornerTmp = merra2VariableEntity.getCorner().split(",");
@@ -109,6 +115,51 @@ public class SiaInputSplitFactory {
     }
 
     return inputSplitList;
+  }
+
+  public static List<GroupedSIAInputSplit> genGroupedSIAInputSplit(List<SiaInputSplit> siaInputSplitList, int taskNumPerNode)
+      throws IOException, InterruptedException {
+    List<GroupedSIAInputSplit> groupedSIAInputSplitList = new ArrayList<GroupedSIAInputSplit>();
+    HashMap<String, List<SiaInputSplit>> hostToSiaInputSplitMap = new HashMap<String, List<SiaInputSplit>>();
+    Iterator<SiaInputSplit> iterator = siaInputSplitList.iterator();
+
+    while (iterator.hasNext()) {
+      SiaInputSplit siaInputSplit = iterator.next();
+      String curHost = "";
+      for (String host : siaInputSplit.getLocations()) {
+        if (curHost.isEmpty() || !hostToSiaInputSplitMap.containsKey(host)) {
+          curHost = host;
+        } else if (hostToSiaInputSplitMap.containsKey(host)) {
+          curHost = hostToSiaInputSplitMap.get(curHost).size() > hostToSiaInputSplitMap.get(host).size()? host : curHost;
+        }
+      }
+
+      List<SiaInputSplit> value = hostToSiaInputSplitMap.getOrDefault(curHost, new ArrayList<SiaInputSplit>());
+      value.add(siaInputSplit);
+      hostToSiaInputSplitMap.put(curHost, value);
+    }
+
+    Set<Map.Entry<String, List<SiaInputSplit>>> entrySet = hostToSiaInputSplitMap.entrySet();
+
+    for (Map.Entry<String, List<SiaInputSplit>> entry : entrySet) {
+      String host = entry.getKey();
+      List<SiaInputSplit> siaInputSplitsPerHost = entry.getValue();
+
+      int insputSplitNumPerGroup = siaInputSplitsPerHost.size() / taskNumPerNode + 1;
+      int start = 0, end = start + insputSplitNumPerGroup;
+      while (start < siaInputSplitsPerHost.size()) {
+        List<SiaInputSplit> subSiaInputSplitList = siaInputSplitsPerHost
+            .subList(start, Math.min(end, siaInputSplitList.size()));
+
+        GroupedSIAInputSplit groupedSIAInputSplit = new GroupedSIAInputSplit(subSiaInputSplitList,
+                                                                             new String[]{host});
+        groupedSIAInputSplitList.add(groupedSIAInputSplit);
+        start += insputSplitNumPerGroup;
+        end += insputSplitNumPerGroup;
+      }
+    }
+
+    return groupedSIAInputSplitList;
   }
 
   public static boolean isShareHosts(SiaChunk chunk1, SiaChunk chunk2) {

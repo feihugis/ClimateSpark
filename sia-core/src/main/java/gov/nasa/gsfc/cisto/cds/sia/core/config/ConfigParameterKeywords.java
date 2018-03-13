@@ -76,6 +76,8 @@ public final class ConfigParameterKeywords {
 
   public static final String INPUT_PATH = "input.path";
 
+  public static final String THREADS_PER_NODE = "threads.per.node";
+
   /**
    * The constant numberReducers.
    */

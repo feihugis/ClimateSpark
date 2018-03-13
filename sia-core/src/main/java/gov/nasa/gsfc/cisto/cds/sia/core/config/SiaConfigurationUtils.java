@@ -333,7 +333,7 @@ public class SiaConfigurationUtils {
         /**
          * Threads per node mapreducer keys.
          */
-        // THREADS_PER_NODE("threads.per.node"),
+        THREADS_PER_NODE(ConfigParameterKeywords.THREADS_PER_NODE),
         /**
          * Analytics operation mapreducer keys.
          */

@@ -85,8 +85,11 @@ public class SiaRecordReader extends RecordReader<VarKey, ArraySerializer> {
       }
     }
 
-    VarKey varKey = new VarKey("Test", dataChunk.getVarShortName(), dataChunk.getTime(), targetCorner, targetShape, dataChunk.getDimensions(),
-                               "-10000000000", "10000000000", "99999999999");
+    VarKey varKey = new VarKey("Test", dataChunk.getVarShortName(),
+                               dataChunk.getTime(), targetCorner,
+                               targetShape, dataChunk.getDimensions(),
+                               "-10000000000", "10000000000",
+                               "99999999999");
     return varKey;
   }
 
@@ -98,7 +101,9 @@ public class SiaRecordReader extends RecordReader<VarKey, ArraySerializer> {
     int[] targetCorner = new int[queryCorner.length], targetShape = new int[queryCorner.length];
 
     if (queryCorner != null && queryShape != null) {
-      if (SiaInputSplitFactory.isIntersected(dataChunk.getCorner(), dataChunk.getShape(), queryCorner, queryShape, targetCorner, targetShape)) {
+      if (SiaInputSplitFactory.isIntersected(dataChunk.getCorner(), dataChunk.getShape(),
+                                             queryCorner, queryShape,
+                                             targetCorner, targetShape)) {
         Array array = SIAIOProvider.read(dataChunk, inputStream);
         int[] relativeCorner = new int[targetCorner.length];
         for (int i = 0; i < relativeCorner.length; i++) {

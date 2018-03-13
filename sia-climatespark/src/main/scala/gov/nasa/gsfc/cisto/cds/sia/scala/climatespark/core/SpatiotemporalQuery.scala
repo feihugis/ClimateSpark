@@ -27,12 +27,12 @@ object SpatiotemporalQuery {
 
     val climateRDD = climateSparkContext.getClimateRDD
 
-    val monthlyAvg = climateRDD.monthlyAvg(1)//.toDF("VarName", "Time", "Avg")
-    //monthlyAvg.show()
+    val monthlyAvg = climateRDD.monthlyAvg(1).toDF("VarName", "Time", "Avg")
+    monthlyAvg.show()
 
 
-    val cellRDD:RDD[Cell4D] = climateRDD.getCells.map(cell => cell.asInstanceOf[Cell4D])
-    val pointRDD = cellRDD.map(cell => (cell.d0, cell.d1, -90.0 + 0.5*cell.d2, -180.0 + 0.625*cell.d3, cell.value))
+    //val cellRDD:RDD[Cell4D] = climateRDD.getCells.map(cell => cell.asInstanceOf[Cell4D])
+    //val pointRDD = cellRDD.map(cell => (cell.d0, cell.d1, -90.0 + 0.5*cell.d2, -180.0 + 0.625*cell.d3, cell.value))
 
     // val df = sqlContext.createDataFrame(cellRDD)
     // val df = pointRDD.toDF("date", "hour", "lat", "lon", "value")

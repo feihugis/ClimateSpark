@@ -16,6 +16,7 @@ import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntity;
 import gov.nasa.gsfc.cisto.cds.sia.core.variableentities.SiaVariableEntityFactory;
 import gov.nasa.gsfc.cisto.cds.sia.hibernate.HibernateUtil;
 import gov.nasa.gsfc.cisto.cds.sia.hibernate.PhysicalNameStrategyImpl;
+import jdk.internal.util.xml.impl.Input;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,6 +78,7 @@ public class SiaInputFormat extends FileInputFormat {
 
     String collectionName = conf.get(ConfigParameterKeywords.COLLECTION_NAME);
     String datasetName = conf.get(ConfigParameterKeywords.DATASET_NAME);
+    int threadNumPerNode = conf.getInt(ConfigParameterKeywords.THREADS_PER_NODE, 12);
 
     queryCorner = spatiotemporalFilters.getStartSpatialBounding();
     queryShape = new int[queryCorner.length];
@@ -85,10 +87,10 @@ public class SiaInputFormat extends FileInputFormat {
       queryShape[i] = endCorner[i] - queryCorner[i] + 1;
     }
 
-
     for (String varName : inputVarNames) {
       try {
-        inputSplits.addAll(getSplits(job, varName, collectionName, datasetName, startDate, endDate));
+        inputSplits.addAll(getSplits(job, varName, collectionName, datasetName, threadNumPerNode,
+                                     startDate, endDate));
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -97,7 +99,9 @@ public class SiaInputFormat extends FileInputFormat {
     return inputSplits;
   }
 
-  public List<InputSplit> getSplits(JobContext job, String varName, String collectionName, String datasetName, final int startDate, final int endDate)
+  public List<InputSplit> getSplits(JobContext job, String varName, String collectionName,
+                                    String datasetName, int threadNumPerNode,
+                                    final int startDate, final int endDate)
       throws Exception {
     String tableName = String.format("%s_%s", varName.toString().toLowerCase(),
                                      collectionName.toLowerCase());
@@ -114,7 +118,11 @@ public class SiaInputFormat extends FileInputFormat {
         dao = new gov.nasa.gsfc.cisto.cds.sia.hibernate.DAOImpl<SiaVariableEntity>();
     dao.setSession(session);
 
-    String query = String.format("from %s where temporal_component >= %d and temporal_component <= %d", tableName, startDate, endDate);
+    String query = String.format("from %s where temporal_component >= %d and temporal_component <= %d order by temporal_component",
+                                 tableName,
+                                 startDate,
+                                 endDate);
+
     List<SiaVariableEntity> merraVariableEntityRetrieved = (List<SiaVariableEntity>) dao.findByQuery(query, entityClass);
 
 
@@ -122,12 +130,10 @@ public class SiaInputFormat extends FileInputFormat {
     String dataType = siaVariableMetadata.getDataType();
     final int[] chunkShape = integerListToIntArray(siaVariableMetadata.getChunkSizes());
 
-
     List<SiaChunk> siaChunks = new ArrayList<SiaChunk>();
 
     hibernateUtil.closeSession();
     hibernateUtil.shutdown();
-
 
     HashMap<Integer, String> temporalToFilePathMap = getTemporalToFilePathMap(datasetName, job.getConfiguration(), collectionName, startDate, endDate);
 
@@ -148,12 +154,15 @@ public class SiaInputFormat extends FileInputFormat {
       siaChunks.add(siaChunk);
     }
 
-    List<InputSplit> siaInputSplits = new ArrayList<InputSplit>();
+    List<SiaInputSplit> siaInputSplits = new ArrayList<SiaInputSplit>();
     siaInputSplits.addAll(SiaInputSplitFactory.genSIAInputSplitByHosts(siaChunks));
+
+    List<InputSplit> groupedSiaInputSplits = new ArrayList<InputSplit>();
+    groupedSiaInputSplits.addAll(SiaInputSplitFactory.genGroupedSIAInputSplit(siaInputSplits, threadNumPerNode));
 
     hibernateUtil.closeSession();
     hibernateUtil.shutdown();
-    return siaInputSplits;
+    return groupedSiaInputSplits;
   }
 
   private Object getSiaFilePathMetadataClass(String datasetName) throws Exception {
@@ -261,9 +270,8 @@ public class SiaInputFormat extends FileInputFormat {
 
   @Override
   public org.apache.hadoop.mapreduce.RecordReader createRecordReader(InputSplit inputSplit,
-                                                                     TaskAttemptContext taskAttemptContext)
-      throws IOException, InterruptedException {
-    return new SiaRecordReader();
+                                                                     TaskAttemptContext taskAttemptContext) {
+    return new GroupedSiaRecordReader();
   }
 
   private static List<FileStatus> filterInputFiles(FileSystem fs, Path inputFilePath, int startTime,
@@ -297,8 +305,6 @@ public class SiaInputFormat extends FileInputFormat {
     FileUtils.getFileList(fs, inputFilePath, MerraPathFilter, fileList, true);
     return fileList;
   }
-
-
 
   public static void main(String[] args) throws Exception {
     Configuration hconf = new Configuration();
