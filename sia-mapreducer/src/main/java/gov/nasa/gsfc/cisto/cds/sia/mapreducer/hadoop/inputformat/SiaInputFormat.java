@@ -161,6 +161,7 @@ public class SiaInputFormat extends FileInputFormat {
 
     hibernateUtil.closeSession();
     hibernateUtil.shutdown();
+    LOG.info("*************** Number of groupedSiaInputSplit: " + groupedSiaInputSplits.size());
     return groupedSiaInputSplits;
   }
 
