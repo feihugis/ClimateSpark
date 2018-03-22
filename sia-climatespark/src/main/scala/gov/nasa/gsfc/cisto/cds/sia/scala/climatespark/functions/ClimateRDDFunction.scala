@@ -12,6 +12,9 @@ import scala.collection.mutable.ArrayBuffer
   * Created by Fei Hu on 12/22/16.
   */
 class ClimateRDDFunction (self: RDD[(VarKey, ArraySerializer)]) extends Serializable{
+  val MISSING_VALUE = 9.9999999E14f
+
+
   def queryPointTimeSeries: RDD[CellOld] = {
     self.flatMap(tuple => {
       val dataChunk = tuple._1
@@ -39,6 +42,24 @@ class ClimateRDDFunction (self: RDD[(VarKey, ArraySerializer)]) extends Serializ
 
   def monthlyAvg(varNum: Int): RDD[(String, Int, Double)] = {
     self.map(tuple => {
+      val (sum, count) = sumDouble(tuple._2.getArray, MISSING_VALUE)
+      val date = tuple._1.getTime.toString.substring(0, 6)
+      val varName = tuple._1.getVarName
+      (varName + "_" + date, (sum, count))
+    }).reduceByKey{case (tuple1, tuple2) => {
+      (tuple1._1 + tuple2._1, tuple1._2 + tuple2._2)
+    }}.map( tuple => {
+      val components = tuple._1.split("_")
+      val varName = components(0)
+      val date = components(1).toInt
+      val avg = tuple._2._1 / tuple._2._2
+
+      (varName, date, avg)
+    })
+  }
+
+  def monthlyAvg_v1(varNum: Int): RDD[(String, Int, Double)] = {
+    self.map(tuple => {
       val avg = MAMath.sumDouble(tuple._2.getArray)/tuple._2.getArray.getSize
       val date = tuple._1.getTime.toString.substring(0, 6)
       val varName = tuple._1.getVarName
@@ -50,6 +71,34 @@ class ClimateRDDFunction (self: RDD[(VarKey, ArraySerializer)]) extends Serializ
       val avg = tuple._2.sum/tuple._2.size
       (varName, date, avg)
     })
+  }
+
+  def average: RDD[(String, Double)] = {
+    self.map(tuple => {
+      val (sum, count) = sumDouble(tuple._2.getArray, MISSING_VALUE)
+      val varName = tuple._1.getVarName
+      (varName, (sum, count))
+    }).reduceByKey {case (tuple1, tuple2) => {
+      (tuple1._1 + tuple2._1, tuple1._2 + tuple2._2)
+    }}.map( tuple => {
+      val varName = tuple._1
+      val avg = tuple._2._1 / tuple._2._2
+      (varName, avg)
+    })
+  }
+
+  def sumDouble(array: ucar.ma2.Array, fillingValue: Float): (Double, Long) = {
+    val itor = array.getIndexIterator
+    var sum = 0.0
+    var count = 0L
+    while (itor.hasNext) {
+      val cur = itor.getDoubleNext
+      if (cur != fillingValue) {
+        sum += cur
+        count += 1
+      }
+    }
+    (sum, count)
   }
 
   def timeAvg(varNum: Int): RDD[(String, ArraySerializer)] = {

@@ -37,6 +37,13 @@ object SpatiotemporalQuery {
     println("Monthly Avg: ", monthlyMeanArray.sum/monthlyMeanArray.size)
 
 
+    val average = climateRDD.average
+
+    average.collect().foreach(println)
+
+    //   KE|198001|8.21638184207709E34|
+
+
     //val cellRDD:RDD[Cell4D] = climateRDD.getCells.map(cell => cell.asInstanceOf[Cell4D])
     //val pointRDD = cellRDD.map(cell => (cell.d0, cell.d1, -90.0 + 0.5*cell.d2, -180.0 + 0.625*cell.d3, cell.value))
 

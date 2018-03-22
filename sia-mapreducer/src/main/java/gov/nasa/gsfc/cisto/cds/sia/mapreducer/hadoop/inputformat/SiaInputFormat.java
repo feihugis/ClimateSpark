@@ -124,6 +124,8 @@ public class SiaInputFormat extends FileInputFormat {
 
     List<SiaVariableEntity> merraVariableEntityRetrieved = (List<SiaVariableEntity>) dao.findByQuery(query, entityClass);
 
+    LOG.info("******** query sql for entry: " + query);
+    LOG.info("******** number of entries: " + merraVariableEntityRetrieved.size());
 
     SiaVariableMetadata siaVariableMetadata = getSiaVariableMetaData(varName, datasetName, collectionName, job.getConfiguration());
     String dataType = siaVariableMetadata.getDataType();

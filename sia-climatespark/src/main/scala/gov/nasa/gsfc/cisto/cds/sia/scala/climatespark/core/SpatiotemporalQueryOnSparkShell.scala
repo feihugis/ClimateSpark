@@ -32,14 +32,9 @@ object SpatiotemporalQueryOnSparkShell {
 
     val climateRDD = climateSparkContext.getClimateRDD
 
-    val monthlyAvg = climateRDD.monthlyAvg(1).cache()
+    val monthlyAvg = climateRDD.average.cache()
 
-    val df = monthlyAvg.toDF("VarName", "Time", "Avg")
+    val df = monthlyAvg.toDF("VarName", "Average")
     df.show()
-
-    val monthlyMeanArray = monthlyAvg.map(tuple => tuple._3).collect()
-
-    println("Monthly Avg: ", monthlyMeanArray.sum/monthlyMeanArray.size)
-
   }
 }
